@@ -1,4 +1,6 @@
-export const LOGO_URL = '/logo/' + encodeURIComponent('Screenshot 2026-08-06 at 16.58.53.png');
+const BASE = import.meta.env.BASE_URL;
+
+export const LOGO_URL = BASE + 'logo/' + encodeURIComponent('Screenshot 2026-08-06 at 16.58.53.png');
 
 export const PAGES = [
   { id: 'home', label: 'Home' },
@@ -8,7 +10,7 @@ export const PAGES = [
   { id: 'contact', label: 'Contact' },
 ];
 
-const testimonialFile = (name) => '/testimonial/' + encodeURIComponent(name);
+const testimonialFile = (name) => BASE + 'testimonial/' + encodeURIComponent(name);
 
 export const GALLERY = [
   {
