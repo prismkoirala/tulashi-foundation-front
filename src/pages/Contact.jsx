@@ -18,8 +18,8 @@ export default function Contact() {
           <h1>Contact Us</h1>
           <div className="np-sub">सम्पर्क गर्नुहोस्</div>
           <p>
-            Whether you wish to sponsor a student, volunteer your time, or simply learn more —
-            our door, and our hearts, are open.
+            Whether you wish to support a scholarship, become a member, or learn about our folk
+            literature programmes — our door, and our hearts, are open.
           </p>
         </div>
         <Mountains />
@@ -53,8 +53,12 @@ export default function Contact() {
                   <div>
                     <strong>Phone</strong>
                     <a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a>
-                    <br />
-                    <a href={`tel:${CONTACT.mobile}`}>{CONTACT.mobile}</a>
+                    {CONTACT.mobile ? (
+                      <>
+                        <br />
+                        <a href={`tel:${CONTACT.mobile}`}>{CONTACT.mobile}</a>
+                      </>
+                    ) : null}
                   </div>
                 </div>
                 <div className="contact-row">
@@ -82,7 +86,7 @@ export default function Contact() {
                   <input type="text" name="name" placeholder="Your full name" required />
                   <input type="email" name="email" placeholder="Email address" required />
                 </div>
-                <input type="text" name="subject" placeholder="Subject (e.g. Sponsor a student)" />
+                <input type="text" name="subject" placeholder="Subject (e.g. Membership, scholarship)" />
                 <textarea name="message" placeholder="Your message…" required />
                 {sent && (
                   <div className="form-note">

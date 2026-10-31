@@ -12,8 +12,8 @@ export default function Faq({ go }) {
           <h1>Frequently Asked Questions</h1>
           <div className="np-sub">धेरैजसो सोधिने प्रश्नहरू</div>
           <p>
-            Everything you might wish to know about our society, our scholarships, and how you can
-            take part. Still curious? We are only a message away.
+            Everything you might wish to know about our society, folk literature honour,
+            scholarships, and how you can take part. Still curious? We are only a message away.
           </p>
         </div>
         <Mountains />

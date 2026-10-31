@@ -1,8 +1,26 @@
 import { useState } from 'react';
 import { LOGO_URL, CONTACT, PAGES } from '../data.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
-export default function Navbar({ page, go }) {
+function UserIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M5 19.5c1.8-3.2 4.2-4.8 7-4.8s5.2 1.6 7 4.8"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export default function Navbar({ page, go, hideChrome = false }) {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+
+  if (hideChrome) return null;
 
   const nav = (id) => {
     go(id);
@@ -49,6 +67,16 @@ export default function Navbar({ page, go }) {
             <li>
               <button className="donate-btn" onClick={() => nav('contact')}>
                 Donate
+              </button>
+            </li>
+            <li>
+              <button
+                className={`nav-user ${page === 'login' || page === 'dashboard' ? 'active' : ''}`}
+                onClick={() => nav(user ? 'dashboard' : 'login')}
+                aria-label={user ? 'Open dashboard' : 'Admin login'}
+                title={user ? 'Dashboard' : 'Admin login'}
+              >
+                <UserIcon />
               </button>
             </li>
           </ul>

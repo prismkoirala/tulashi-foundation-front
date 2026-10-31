@@ -1,14 +1,55 @@
-import { useState, useEffect, useCallback } from 'react';
-import { GALLERY, VOICES } from '../data.js';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Mountains, Divider } from '../components/Decor.jsx';
+import { fetchTestimonials } from '../lib/api.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 
 export default function Testimonials() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [active, setActive] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!isSupabaseConfigured) {
+        setLoading(false);
+        setError('Events will appear once Supabase keys are configured.');
+        return;
+      }
+      try {
+        const data = await fetchTestimonials();
+        if (alive) setItems(data);
+      } catch (err) {
+        if (alive) setError(err.message);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const flatImages = useMemo(
+    () =>
+      items.flatMap((item) =>
+        (item.images || []).map((img) => ({
+          ...img,
+          title: item.title,
+          event_address: item.event_address,
+        }))
+      ),
+    [items]
+  );
 
   const close = useCallback(() => setActive(null), []);
   const step = useCallback(
-    (dir) => setActive((i) => (i + dir + GALLERY.length) % GALLERY.length),
-    []
+    (dir) => {
+      if (!flatImages.length) return;
+      setActive((i) => (i + dir + flatImages.length) % flatImages.length);
+    },
+    [flatImages.length]
   );
 
   useEffect(() => {
@@ -26,15 +67,22 @@ export default function Testimonials() {
     };
   }, [active, close, step]);
 
+  const openFromItem = (item, imageIndex = 0) => {
+    const first = item.images?.[imageIndex];
+    if (!first) return;
+    const idx = flatImages.findIndex((img) => img.id === first.id);
+    if (idx >= 0) setActive(idx);
+  };
+
   return (
     <main>
       <section className="page-hero">
         <div className="container">
-          <h1>Testimonials &amp; Memories</h1>
-          <div className="np-sub">स्मृतिहरू र अनुभूतिहरू</div>
+          <h1>Events &amp; Memories</h1>
+          <div className="np-sub">स्मृतिहरू र कार्यक्रमहरू</div>
           <p>
-            Glimpses from scholarship days, health camps and classrooms — and the voices of the
-            students and families whose journeys we are honoured to share.
+            Scholarship days, folk literature honours, and gatherings — moments from the society’s
+            journey in education and folk heritage.
           </p>
         </div>
         <Mountains />
@@ -45,56 +93,52 @@ export default function Testimonials() {
           <div className="section-head">
             <span className="kicker">Gallery</span>
             <h2>Moments we hold dear</h2>
-            <p>Click any photograph to view it in full. Every frame is a story of hope.</p>
+            <p>Each entry includes place, story, and photographs from the day.</p>
             <Divider />
           </div>
-          <div className="gallery-grid">
-            {GALLERY.map((img, i) => (
-              <figure
-                className="gallery-item"
-                key={img.src}
-                onClick={() => setActive(i)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setActive(i)}
-                aria-label={img.caption}
-              >
-                <img src={img.src} alt={img.caption} loading="lazy" />
-                <figcaption className="caption">{img.caption}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section className="section tinted">
-        <div className="container">
-          <div className="section-head">
-            <span className="kicker">In their words</span>
-            <h2>Voices of our family</h2>
-            <Divider />
-          </div>
-          <div className="voice-grid">
-            {VOICES.map((v) => (
-              <article className="voice-card" key={v.name}>
-                <p>{v.quote}</p>
-                <div className="who">
-                  <strong>{v.name}</strong>
-                  <span>{v.role}</span>
+          {loading && <div className="dash-empty">Loading events…</div>}
+          {!loading && error && <div className="dash-alert">{error}</div>}
+          {!loading && !error && items.length === 0 && (
+            <div className="dash-empty">
+              Events and memories will appear here once published from the admin dashboard.
+            </div>
+          )}
+
+          <div className="event-list">
+            {items.map((item) => (
+              <article className="event-card" key={item.id}>
+                <div className="event-copy">
+                  <h3>{item.title}</h3>
+                  {item.event_address && (
+                    <div className="event-place">{item.event_address}</div>
+                  )}
+                  {item.description && <p>{item.description}</p>}
                 </div>
+                {(item.images || []).length > 0 && (
+                  <div className="event-gallery">
+                    {item.images.map((img, i) => (
+                      <button
+                        type="button"
+                        className="event-thumb"
+                        key={img.id}
+                        onClick={() => openFromItem(item, i)}
+                        aria-label={`${item.title} photo ${i + 1}`}
+                      >
+                        <img src={img.image_url} alt="" loading="lazy" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {active !== null && (
+      {active !== null && flatImages[active] && (
         <div className="lightbox" onClick={close} role="dialog" aria-modal="true">
-          <button
-            className="lb-btn lb-close"
-            onClick={close}
-            aria-label="Close"
-          >
+          <button className="lb-btn lb-close" onClick={close} aria-label="Close">
             ×
           </button>
           <button
@@ -108,8 +152,8 @@ export default function Testimonials() {
             ‹
           </button>
           <img
-            src={GALLERY[active].src}
-            alt={GALLERY[active].caption}
+            src={flatImages[active].image_url}
+            alt={flatImages[active].title}
             onClick={(e) => e.stopPropagation()}
           />
           <button
@@ -123,7 +167,8 @@ export default function Testimonials() {
             ›
           </button>
           <div className="lb-count">
-            {active + 1} / {GALLERY.length} — {GALLERY[active].caption}
+            {active + 1} / {flatImages.length} — {flatImages[active].title}
+            {flatImages[active].event_address ? ` · ${flatImages[active].event_address}` : ''}
           </div>
         </div>
       )}

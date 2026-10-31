@@ -9,17 +9,17 @@ export default function Home({ go }) {
           <div>
             <div className="hero-eyebrow">A memorial of service · Kathmandu, Nepal</div>
             <h1>
-              Lighting the lamp of <em>education</em> for every child
+              Honouring a life of <em>learning</em> and folk heritage
             </h1>
-            <div className="np-tagline">शिक्षा नै सेवा हो — स्मृति नै प्रेरणा हो</div>
+            <div className="np-tagline">शिक्षा, लोक साहित्य र सेवा — स्मृति नै प्रेरणा हो</div>
             <p className="lead">
-              In loving memory of Late Tulasiman Shrestha, our society walks beside children from
-              humble homes — providing free education, healthcare, scholarships and the quiet
-              assurance that someone believes in them.
+              In loving memory of Late Tulasiman Shrestha — educator and folk-literature scholar —
+              our society promotes education, folk literature and music, scholarships for needy
+              students, and programmes that inspire the next generation.
             </p>
             <div className="hero-actions">
               <button className="btn btn-gold" onClick={() => go('contact')}>
-                Support a Student
+                Support Our Mission
               </button>
               <button className="btn btn-outline" onClick={() => go('testimonials')}>
                 See Our Work
@@ -41,19 +41,20 @@ export default function Home({ go }) {
           <div className="about-copy">
             <div className="section-head" style={{ textAlign: 'left', margin: '0 0 24px' }}>
               <span className="kicker">Who we are</span>
-              <h2>A promise kept since 2017</h2>
+              <h2>A promise kept since 2073 B.S.</h2>
               <Divider />
             </div>
             <h3 style={{ display: 'none' }}>About</h3>
             <p>
-              The Tulasiman Shrestha Memorial Society was founded by family, friends and former
-              students of Late Tulasiman Shrestha — a teacher who believed that no child in Nepal
-              should ever be turned away from a classroom for want of money.
+              The Tulasiman Shrestha Memorial Society is a non-profit social organisation founded in
+              the name of Late Tulasiman Shrestha — a teacher and folk-literature scholar from
+              Chyangli, Gorkha, who devoted his life to education and Nepali lore.
             </p>
             <p>
-              What began as a small scholarship fund has grown into a community of donors,
-              volunteers and well-wishers united by one conviction: education is the most
-              dignified gift one generation can hand to the next.
+              Registered with the District Administration Office, Kathmandu and the Social Welfare
+              Council, the society has more than 80 lifetime members across Nepal and abroad. We
+              honour his memory through folk-literature recognition, scholarships in Palungtar, and
+              cultural and educational programmes.
             </p>
             <ul className="about-values">
               <li>
@@ -61,8 +62,8 @@ export default function Home({ go }) {
                   <Icon name="heart" size={22} />
                 </span>
                 <div>
-                  <strong>Seva — Selfless Service</strong>
-                  <span>Every volunteer serves without pay; every rupee reaches a child.</span>
+                  <strong>Smriti — Remembrance</strong>
+                  <span>Keeping alive Late Tulasiman Shrestha’s ideas and contributions.</span>
                 </div>
               </li>
               <li>
@@ -70,8 +71,8 @@ export default function Home({ go }) {
                   <Icon name="book" size={22} />
                 </span>
                 <div>
-                  <strong>Shiksha — Education First</strong>
-                  <span>Fees, books, uniforms and mentorship, from Grade 1 to Grade 12.</span>
+                  <strong>Shiksha — Education & Scholarship</strong>
+                  <span>Supporting meritorious students from economically humble homes.</span>
                 </div>
               </li>
               <li>
@@ -79,8 +80,8 @@ export default function Home({ go }) {
                   <Icon name="users" size={22} />
                 </span>
                 <div>
-                  <strong>Samaj — Community</strong>
-                  <span>We work with schools, guardians and local wards, never around them.</span>
+                  <strong>Lok Sahitya — Folk Heritage</strong>
+                  <span>Uplifting Nepali folk literature and music through honour and programmes.</span>
                 </div>
               </li>
             </ul>
@@ -92,28 +93,28 @@ export default function Home({ go }) {
         <div className="container">
           <div className="section-head">
             <span className="kicker">Our impact</span>
-            <h2>Small hands, great journeys</h2>
+            <h2>A legacy carried forward</h2>
             <p>Numbers tell only part of the story — but they are a beginning.</p>
             <Divider />
           </div>
           <div className="stats-grid">
             <div className="stat">
-              <div className="num">350+</div>
-              <div className="label">Students Supported</div>
-              <div className="np-sub">विद्यार्थीहरू</div>
+              <div className="num">80+</div>
+              <div className="label">Lifetime Members</div>
+              <div className="np-sub">आजीवन सदस्यहरू</div>
             </div>
             <div className="stat">
-              <div className="num">27</div>
-              <div className="label">Partner Schools</div>
-              <div className="np-sub">विद्यालयहरू</div>
+              <div className="num">8</div>
+              <div className="label">Folk Literature Honourees</div>
+              <div className="np-sub">लोकसाहित्य सम्मान</div>
             </div>
             <div className="stat">
-              <div className="num">14</div>
-              <div className="label">Health Camps Held</div>
-              <div className="np-sub">स्वास्थ्य शिविर</div>
+              <div className="num">2</div>
+              <div className="label">Partner Schools, Palungtar</div>
+              <div className="np-sub">साझेदार विद्यालयहरू</div>
             </div>
             <div className="stat">
-              <div className="num">9</div>
+              <div className="num">9+</div>
               <div className="label">Years of Service</div>
               <div className="np-sub">सेवाका वर्षहरू</div>
             </div>
@@ -125,10 +126,10 @@ export default function Home({ go }) {
         <div className="container">
           <div className="section-head">
             <span className="kicker">What we do</span>
-            <h2>Programmes rooted in compassion</h2>
+            <h2>Programmes rooted in his ideals</h2>
             <p>
-              Each programme is designed to remove one more barrier between a poor child and a
-              classroom.
+              Each programme carries forward Late Tulasiman Shrestha’s commitment to education,
+              folk literature and service to society.
             </p>
             <Divider />
           </div>
@@ -151,19 +152,19 @@ export default function Home({ go }) {
         <div className="container quote-banner">
           <p className="np-quote">"विद्या ददाति विनयम् — Knowledge bestows humility."</p>
           <blockquote>
-            "My father used to say that a single pencil, placed in the right hand, can rewrite a
-            family's future. This society is our way of keeping his pencil moving."
+            "Late Tulasiman Shrestha lit classrooms across Gorkha and beyond, and gave voice to
+            Nepali folk literature. This society is our way of keeping that lamp burning."
           </blockquote>
-          <cite>— THE SHRESTHA FAMILY, FOUNDERS</cite>
+          <cite>— TULASIMAN SHRESTHA MEMORIAL SOCIETY</cite>
         </div>
       </section>
 
       <section className="section crimson-band cta-band">
         <div className="container">
-          <h2>One child's future begins with you</h2>
+          <h2>Carry the lamp forward with us</h2>
           <p>
-            Sponsor a student, volunteer your skills, or simply spread the word — every gesture
-            becomes part of a story a child will tell one day.
+            Become a member, support a scholarship, or join a cultural programme — every gesture
+            honours a life devoted to education and folk heritage.
           </p>
           <button className="btn btn-gold" onClick={() => go('contact')}>
             Get in Touch

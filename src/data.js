@@ -5,7 +5,7 @@ export const LOGO_URL = BASE + 'logo/' + encodeURIComponent('Screenshot 2026-08-
 export const PAGES = [
   { id: 'home', label: 'Home' },
   { id: 'members', label: 'Members' },
-  { id: 'testimonials', label: 'Testimonials' },
+  { id: 'testimonials', label: 'Events' },
   { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ];
@@ -15,27 +15,27 @@ const testimonialFile = (name) => BASE + 'testimonial/' + encodeURIComponent(nam
 export const GALLERY = [
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.16.24 PM.jpeg'),
-    caption: 'Scholarship distribution day — smiles that say everything',
+    caption: 'Scholarship distribution — supporting students in Palungtar',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.16.24 PM(1).jpeg'),
-    caption: 'Our scholars receiving their annual stationery support',
+    caption: 'Tulasiman Shrestha Scholarship recipients with guardians',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.17.57 PM.jpeg'),
-    caption: 'Community health camp organised for student families',
+    caption: 'A gathering of the society family and well-wishers',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.18.14 PM.jpeg'),
-    caption: 'A classroom in session at one of our partner schools',
+    caption: 'Students at a partner school in Palungtar, Gorkha',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.18.52 PM.jpeg'),
-    caption: 'Uniform handover before the new academic session',
+    caption: 'Recognising merit and need among young learners',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.36.09 PM.jpeg'),
-    caption: 'Volunteers and guardians at our annual gathering',
+    caption: 'Members and guests at an annual society programme',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.36.30 PM.jpeg'),
@@ -43,15 +43,15 @@ export const GALLERY = [
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.36.46 PM.jpeg'),
-    caption: 'Moments from our education awareness programme',
+    caption: 'Moments from an education and cultural awareness programme',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.37.30 PM.jpeg'),
-    caption: 'Young dreamers, bright futures — our scholarship batch',
+    caption: 'Young scholars encouraged through the society scholarship',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.37.47 PM.jpeg'),
-    caption: 'Books, bags and blessings for the new school year',
+    caption: 'Support and blessings for a new academic session',
   },
   {
     src: testimonialFile('WhatsApp Image 2026-07-11 at 6.38.03 PM.jpeg'),
@@ -61,139 +61,84 @@ export const GALLERY = [
 
 export const PROGRAMS = [
   {
-    np: 'निःशुल्क शिक्षा',
-    title: 'Free Education',
-    text: 'Full scholarships covering tuition, textbooks, uniforms and examination fees for students from low-income families, from primary school through higher secondary.',
-    icon: 'book',
-  },
-  {
-    np: 'स्वास्थ्य सेवा',
-    title: 'Healthcare Support',
-    text: 'Regular health check-ups, medicine support and annual community health camps so that illness never becomes the reason a child leaves school.',
-    icon: 'heart',
+    np: 'लोकसाहित्य सम्मान',
+    title: 'Folk Literature Honour',
+    text: 'The Tulasiman Shrestha Folk Literature Honour (Rs 25,000) recognises personalities who enrich Nepali folk literature and folk music — continuing since 2075 B.S.',
+    icon: 'award',
   },
   {
     np: 'छात्रवृत्ति कार्यक्रम',
     title: 'Scholarship Programme',
-    text: 'Merit and need-based scholarships awarded every year, with mentorship that walks beside each student until they stand on their own feet.',
-    icon: 'award',
+    text: 'Need- and merit-based scholarships of Rs 10,000 for economically disadvantaged yet capable students at Jeevan Jyoti Secondary School and Rajgare Secondary School in Palungtar, Gorkha.',
+    icon: 'book',
   },
   {
-    np: 'शैक्षिक सामग्री',
-    title: 'Learning Materials',
-    text: 'Distribution of school bags, stationery, and library resources to community schools in underserved neighbourhoods of the valley.',
+    np: 'अक्षय कोष',
+    title: 'Endowment Fund',
+    text: 'A lasting fund built from family contributions and lifetime membership fees — aimed at strengthening the folk literature honour and supporting partner schools in Palungtar.',
+    icon: 'heart',
+  },
+  {
+    np: 'लोक साहित्य र संगीत',
+    title: 'Folk Literature & Music',
+    text: 'Programmes that uplift and preserve Nepali folk literature and folk music, honouring the scholarly legacy of Late Tulasiman Shrestha.',
+    icon: 'lamp',
+  },
+  {
+    np: 'शिक्षा र संस्कृति',
+    title: 'Education & Culture',
+    text: 'Promoting education, social service and cultural activities so that learning and heritage walk hand in hand for the next generation.',
     icon: 'pencil',
   },
   {
-    np: 'अभिभावक परामर्श',
-    title: 'Family Counselling',
-    text: 'Guidance sessions for parents and guardians on the value of education, child wellbeing and keeping girls in school.',
+    np: 'सद्भाव र प्रेरणा',
+    title: 'Harmony & Inspiration',
+    text: 'Programmes that inspire young people and advance cooperation, unity and goodwill in society — in memory of Late Tulasiman Shrestha\'s ideals.',
     icon: 'users',
-  },
-  {
-    np: 'सीप विकास',
-    title: 'Skill Development',
-    text: 'Weekend workshops in computer literacy, arts and vocational skills that open doors beyond the classroom for senior students.',
-    icon: 'lamp',
-  },
-];
-
-export const VOICES = [
-  {
-    quote:
-      'When my father fell ill, I thought my books would be replaced by work. This society paid my fees for three years. Today I am studying to be a nurse.',
-    name: 'Sita Tamang',
-    role: 'Scholarship Student, Grade 12',
-  },
-  {
-    quote:
-      'They did not just give my son a uniform and books. They gave our whole family the courage to dream bigger than our circumstances.',
-    name: 'Bishnu Maya Gurung',
-    role: 'Parent of a Scholar',
-  },
-  {
-    quote:
-      'I volunteer at every health camp. Watching children receive care they could never afford reminds me why this society exists — seva above all.',
-    name: 'Dr. Ramesh Adhikari',
-    role: 'Volunteer Physician',
   },
 ];
 
 export const FAQS = [
   {
     q: 'What is the Tulasiman Shrestha Memorial Society?',
-    a: 'We are a non-profit, non-political social organisation established in 2017 in loving memory of the late Tulasiman Shrestha. Our sole purpose is to support underprivileged students in Nepal through free education, healthcare, scholarships and learning materials.',
+    a: 'We are a non-profit social organisation established in the name of Late Tulasiman Shrestha after his passing in 2073 B.S. Registered with the District Administration Office, Kathmandu (Reg. No. 652) and the Social Welfare Council (Reg. No. 47530), we honour his legacy through folk literature, education, scholarships and social service.',
   },
   {
-    q: 'Who is eligible for the scholarship programme?',
-    a: 'Any student enrolled in a community (public) school whose family income falls below the poverty threshold may apply. Priority is given to orphaned children, single-parent households, girls at risk of dropping out, and students with demonstrated academic promise.',
+    q: 'What are the main objectives of the society?',
+    a: 'To remember Late Tulasiman Shrestha\'s ideas and contributions; promote folk literature and folk music; advance education, social service and cultural activities; inspire the new generation; foster cooperation, unity and harmony; and provide scholarships to economically disadvantaged and meritorious students.',
   },
   {
-    q: 'How can I apply for support for my child?',
-    a: 'Visit our office during working hours with your child\'s school recommendation letter, a copy of the birth certificate or citizenship, and a brief income statement from your ward office. Our team reviews applications every year before the new academic session begins in Baisakh.',
+    q: 'What is the Tulasiman Shrestha Folk Literature Honour?',
+    a: 'It is an annual honour of Rs 25,000 awarded to personalities working for the upliftment of Nepali folk literature and folk music. Recipients since 2075 B.S. include Prof. Dr. Chudamani Bandhu, Satya Mohan Joshi, Nanda Krishna Joshi, Gyanu Rana, Prof. Tulasi Diwas, Prof. Dr. Kusumakar Neupane, Raju Pariyar and Raju Babu Shrestha.',
+  },
+  {
+    q: 'Who receives the Tulasiman Shrestha Scholarship?',
+    a: 'Economically disadvantaged and meritorious students studying at Shree Jeevan Jyoti Secondary School, Biruwatar, Palungtar and Shree Rajgare Secondary School, Kamaltar, Palungtar in Gorkha district. Each scholarship is Rs 10,000, and the programme continues every year.',
   },
   {
     q: 'How is the society funded?',
-    a: 'We are funded entirely by membership contributions, individual donors, and small grants from well-wishers within Nepal and the Nepali diaspora abroad. Every rupee received is accounted for in our annual general meeting and published financial report.',
+    a: 'Through contributions from Late Tulasiman Shrestha\'s family and relatives, lifetime membership fees, and support from well-wishers. An endowment fund (अक्षय कोष) has been established to sustain the folk literature honour and school support.',
   },
   {
-    q: 'Can I donate or sponsor a student?',
-    a: 'Yes. You may make a one-time donation or sponsor a student\'s full education for a year. Sponsors receive a yearly progress report of the student they support. Please reach us through the contact page and we will share the details.',
-  },
-  {
-    q: 'Do you accept volunteers?',
-    a: 'Warmly. We welcome teachers, doctors, students and professionals who wish to contribute time — at health camps, material distribution days, tutoring sessions and awareness programmes. Fill in the contact form and mention "volunteer" in your message.',
+    q: 'Can I become a member or support the society?',
+    a: 'Yes. The society has more than 80 lifetime members across Nepal, the USA, Germany, Taiwan, Denmark and elsewhere. Reach us through the contact page to learn about membership, donations or volunteering.',
   },
   {
     q: 'Where does the society operate?',
-    a: 'Our office is based in Kathmandu, and our programmes currently reach community schools across the Kathmandu Valley, with plans to extend support to rural districts in the coming years.',
+    a: 'Our office is in Anamnagar, Kathmandu (Ward No. 16). Scholarship programmes currently support partner schools in Palungtar Municipality, Gorkha — the home region of Late Tulasiman Shrestha.',
   },
   {
-    q: 'Is my donation tax-deductible and transparent?',
-    a: 'The society is registered with the District Administration Office and affiliated with the Social Welfare Council of Nepal. All donations are receipted, and audited statements are shared with members and donors annually.',
-  },
-];
-
-export const MEMBER_TIERS = [
-  {
-    tier: 'Executive Committee',
-    np: 'कार्यसमिति',
-    members: [
-      { name: 'Dr. Kamal Shrestha', np: 'अध्यक्ष', role: 'President' },
-      { name: 'Mrs. Sunita Manandhar', np: 'उपाध्यक्ष', role: 'Vice-President' },
-      { name: 'Mr. Rajan Bahadur KC', np: 'महासचिव', role: 'General Secretary' },
-      { name: 'Ms. Prabha Tuladhar', np: 'सचिव', role: 'Secretary' },
-      { name: 'Mr. Dipak Raj Joshi', np: 'कोषाध्यक्ष', role: 'Treasurer' },
-      { name: 'Mrs. Mina Gurung', np: 'सह-कोषाध्यक्ष', role: 'Joint Treasurer' },
-    ],
-  },
-  {
-    tier: 'Advisory Board',
-    np: 'सल्लाहकार समिति',
-    members: [
-      { name: 'Prof. Bhekh Bahadur Thapa', np: 'प्रमुख सल्लाहकार', role: 'Chief Advisor' },
-      { name: 'Mrs. Laxmi Devi Pandey', np: 'सल्लाहकार', role: 'Advisor' },
-      { name: 'Mr. Hari Prasad Sharma', np: 'सल्लाहकार', role: 'Advisor' },
-    ],
-  },
-  {
-    tier: 'General Members',
-    np: 'सदस्यहरू',
-    members: [
-      { name: 'Mr. Nabin Kumar Basnet', np: 'सदस्य', role: 'Member' },
-      { name: 'Ms. Asmita Rana', np: 'सदस्य', role: 'Member' },
-      { name: 'Mr. Suresh Lama', np: 'सदस्य', role: 'Member' },
-      { name: 'Mrs. Gita Maharjan', np: 'सदस्य', role: 'Member' },
-    ],
+    q: 'Is the society officially registered?',
+    a: 'Yes. It is registered under the Association Registration Act 2034 at the District Administration Office, Kathmandu (Reg. No. 652) and under the Social Welfare Act 2049 with the Social Welfare Council, Lainchaur (Reg. No. 47530).',
   },
 ];
 
 export const CONTACT = {
-  address: 'Mid-Baneshwor, Kathmandu 44600, Nepal',
-  phone: '+977-1-4578901',
-  mobile: '+977-9841234567',
+  address: 'Ward No. 16, Anamnagar, Kathmandu Metropolitan City, Nepal',
+  phone: '+977-1-4101103',
+  mobile: '',
   email: 'info@tsmsociety.org.np',
   hours: 'Sunday – Friday, 10:00 AM – 5:00 PM',
   mapEmbed:
-    'https://maps.google.com/maps?q=Baneshwor,%20Kathmandu,%20Nepal&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    'https://maps.google.com/maps?q=Anamnagar,%20Kathmandu,%20Nepal&t=&z=15&ie=UTF8&iwloc=&output=embed',
 };

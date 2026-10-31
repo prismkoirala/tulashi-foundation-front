@@ -1,29 +1,70 @@
-import { MEMBER_TIERS } from '../data.js';
+import { useEffect, useState } from 'react';
 import { Mountains, Divider } from '../components/Decor.jsx';
+import { fetchMembers } from '../lib/api.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 
-const initials = (name) =>
+const initials = (name = '') =>
   name
-    .replace(/^(Dr\.|Mr\.|Mrs\.|Ms\.|Prof\.)\s*/, '')
+    .replace(/^(Prof\.\s*)?(Dr\.|Mr\.|Mrs\.|Ms\.)\s*/i, '')
+    .replace(/^(Prof\.)\s*/i, '')
     .split(/\s+/)
+    .filter(Boolean)
     .map((w) => w[0])
     .slice(0, 2)
     .join('')
-    .toUpperCase();
+    .toUpperCase() || '?';
 
 function MemberCard({ member }) {
   return (
     <article className="member-card">
       <div className="member-photo" aria-hidden="true">
-        <span className="member-initials">{initials(member.name)}</span>
+        {member.image_url ? (
+          <img src={member.image_url} alt="" className="member-photo-img" />
+        ) : (
+          <span className="member-initials">{initials(member.name)}</span>
+        )}
       </div>
       <h3>{member.name}</h3>
-      <span className="member-role">{member.role}</span>
-      <span className="member-np devanagari">{member.np}</span>
+      {member.designation && <span className="member-role">{member.designation}</span>}
+      {(member.address || member.permanent_address) && (
+        <span className="member-meta">
+          {member.address || member.permanent_address}
+        </span>
+      )}
     </article>
   );
 }
 
 export default function Members({ go }) {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!isSupabaseConfigured) {
+        setLoading(false);
+        setError('Member list will appear once Supabase keys are configured.');
+        return;
+      }
+      try {
+        const data = await fetchMembers();
+        if (alive) setMembers(data);
+      } catch (err) {
+        if (alive) setError(err.message);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const withRole = members.filter((m) => m.designation);
+  const lifetime = members.filter((m) => !m.designation);
+
   return (
     <main>
       <section className="page-hero">
@@ -31,36 +72,73 @@ export default function Members({ go }) {
           <h1>Our Members</h1>
           <div className="np-sub">हाम्रा सदस्यहरू</div>
           <p>
-            The hands and hearts behind the society — a volunteer family bound together by the
-            memory of Late Tulasiman Shrestha and the promise of service.
+            Lifetime members and office-bearers bound together by the memory of Late Tulasiman
+            Shrestha and a shared commitment to education and folk heritage.
           </p>
         </div>
         <Mountains />
       </section>
 
-      {MEMBER_TIERS.map((tier, i) => (
-        <section className={`section ${i % 2 === 1 ? 'tinted' : ''}`} key={tier.tier}>
+      {loading && (
+        <section className="section">
+          <div className="container dash-empty">Loading members…</div>
+        </section>
+      )}
+
+      {!loading && error && (
+        <section className="section">
+          <div className="container dash-alert">{error}</div>
+        </section>
+      )}
+
+      {!loading && !error && members.length === 0 && (
+        <section className="section">
+          <div className="container dash-empty">
+            Members will be listed here once added from the admin dashboard.
+          </div>
+        </section>
+      )}
+
+      {!loading && withRole.length > 0 && (
+        <section className="section">
           <div className="container">
             <div className="section-head">
-              <span className="kicker">{tier.np}</span>
-              <h2>{tier.tier}</h2>
+              <span className="kicker">कार्यसमिति</span>
+              <h2>Committee &amp; designated roles</h2>
               <Divider />
             </div>
             <div className="member-grid">
-              {tier.members.map((m) => (
-                <MemberCard member={m} key={m.name} />
+              {withRole.map((m) => (
+                <MemberCard member={m} key={m.id} />
               ))}
             </div>
           </div>
         </section>
-      ))}
+      )}
+
+      {!loading && lifetime.length > 0 && (
+        <section className={`section ${withRole.length ? 'tinted' : ''}`}>
+          <div className="container">
+            <div className="section-head">
+              <span className="kicker">आजीवन सदस्यहरू</span>
+              <h2>Lifetime members</h2>
+              <Divider />
+            </div>
+            <div className="member-grid">
+              {lifetime.map((m) => (
+                <MemberCard member={m} key={m.id} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="section crimson-band cta-band">
         <div className="container">
           <h2>Become part of the family</h2>
           <p>
-            Membership is open to anyone who believes in our cause. Join us as a general member or
-            volunteer, and help keep the lamp burning.
+            Lifetime membership is open to anyone who shares our cause. Join more than 80 members
+            across Nepal and abroad, and help keep his lamp burning.
           </p>
           <button className="btn btn-gold" onClick={() => go('contact')}>
             Join the Society

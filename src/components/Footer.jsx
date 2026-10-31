@@ -20,8 +20,8 @@ export default function Footer({ go }) {
             </div>
           </a>
           <p>
-            A non-profit society devoted to the memory of Late Tulasiman Shrestha — lighting the
-            lamp of education for children who need it most, since 2017.
+            A non-profit society devoted to the memory of Late Tulasiman Shrestha — promoting
+            education, folk literature and scholarships since 2073 B.S.
           </p>
         </div>
         <div>
@@ -50,7 +50,7 @@ export default function Footer({ go }) {
       </div>
       <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} Tulasiman Shrestha Memorial Society. All rights reserved.</span>
-        <span className="devanagari">शिक्षा नै सेवा हो — Education is Service</span>
+        <span className="devanagari">शिक्षा, लोक साहित्य र सेवा — स्मृति नै प्रेरणा हो</span>
       </div>
     </footer>
   );
