@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
   createMember,
+  DEFAULT_MEMBER_TYPE,
   deleteMember,
   fetchMembers,
+  MEMBER_TYPES,
+  normalizeMemberType,
   updateMember,
   uploadMemberImage,
 } from '../lib/api.js';
@@ -14,9 +17,13 @@ const empty = {
   email: '',
   phone: '',
   designation: '',
+  member_type: DEFAULT_MEMBER_TYPE,
   image_url: '',
   sort_order: 0,
 };
+
+const memberTypeLabel = (value) =>
+  MEMBER_TYPES.find((t) => t.value === normalizeMemberType(value))?.label || 'Live';
 
 export default function MembersAdmin() {
   const [rows, setRows] = useState([]);
@@ -27,6 +34,7 @@ export default function MembersAdmin() {
   const [file, setFile] = useState(null);
   const [busy, setBusy] = useState(false);
   const [q, setQ] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
 
   const load = async () => {
     setLoading(true);
@@ -59,6 +67,7 @@ export default function MembersAdmin() {
       email: row.email || '',
       phone: row.phone || '',
       designation: row.designation || '',
+      member_type: normalizeMemberType(row.member_type),
       image_url: row.image_url || '',
       sort_order: row.sort_order ?? 0,
     });
@@ -87,6 +96,7 @@ export default function MembersAdmin() {
         email: form.email.trim() || null,
         phone: form.phone.trim() || null,
         designation: form.designation.trim() || null,
+        member_type: normalizeMemberType(form.member_type),
         image_url,
         sort_order: Number(form.sort_order) || 0,
       };
@@ -115,7 +125,9 @@ export default function MembersAdmin() {
   };
 
   const filtered = rows.filter((r) => {
-    const hay = `${r.name} ${r.address || ''} ${r.designation || ''} ${r.email || ''}`.toLowerCase();
+    if (typeFilter !== 'all' && normalizeMemberType(r.member_type) !== typeFilter) return false;
+    const hay =
+      `${r.name} ${r.address || ''} ${r.designation || ''} ${r.email || ''} ${memberTypeLabel(r.member_type)} ${normalizeMemberType(r.member_type)}`.toLowerCase();
     return hay.includes(q.trim().toLowerCase());
   });
 
@@ -124,7 +136,7 @@ export default function MembersAdmin() {
       <div className="dash-panel-head">
         <div>
           <h2>Members</h2>
-          <p>Lifetime and general members — create, edit, or remove.</p>
+          <p>Executive members appear on the public Members page. Live members are admin-only.</p>
         </div>
         <button type="button" className="btn btn-crimson" onClick={openCreate}>
           Add member
@@ -138,6 +150,19 @@ export default function MembersAdmin() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
+        <select
+          className="dash-filter"
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          aria-label="Filter by member type"
+        >
+          <option value="all">All types</option>
+          {MEMBER_TYPES.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
         <span className="dash-count">{filtered.length} shown</span>
       </div>
 
@@ -155,6 +180,7 @@ export default function MembersAdmin() {
                 <th>Address</th>
                 <th>Contact</th>
                 <th>Designation</th>
+                <th>Type</th>
                 <th />
               </tr>
             </thead>
@@ -182,6 +208,13 @@ export default function MembersAdmin() {
                     <div className="dash-tiny">{row.phone || ''}</div>
                   </td>
                   <td>{row.designation || '—'}</td>
+                  <td>
+                    <span
+                      className={`dash-badge dash-badge-${normalizeMemberType(row.member_type)}`}
+                    >
+                      {memberTypeLabel(row.member_type)}
+                    </span>
+                  </td>
                   <td className="dash-actions">
                     <button type="button" onClick={() => openEdit(row)}>
                       Edit
@@ -218,6 +251,19 @@ export default function MembersAdmin() {
                   onChange={setField('designation')}
                   placeholder="e.g. President, Lifetime Member"
                 />
+              </label>
+              <label>
+                Member type *
+                <select value={form.member_type} onChange={setField('member_type')}>
+                  {MEMBER_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="dash-tiny">
+                  Executive = shown on public Members page · Live = admin-only
+                </span>
               </label>
               <label>
                 Address (current)

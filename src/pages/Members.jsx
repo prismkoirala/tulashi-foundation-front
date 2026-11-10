@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Mountains, Divider } from '../components/Decor.jsx';
-import { fetchMembers } from '../lib/api.js';
+import { fetchPublicMembers } from '../lib/api.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 
 const initials = (name = '') =>
@@ -49,7 +49,8 @@ export default function Members({ go }) {
         return;
       }
       try {
-        const data = await fetchMembers();
+        // Executive only — live members are admin-only and never listed here.
+        const data = await fetchPublicMembers();
         if (alive) setMembers(data);
       } catch (err) {
         if (alive) setError(err.message);
@@ -62,8 +63,10 @@ export default function Members({ go }) {
     };
   }, []);
 
-  const withRole = members.filter((m) => m.designation);
-  const lifetime = members.filter((m) => !m.designation);
+  // Defence-in-depth: never render a live member even if a stale row slips through.
+  const executive = members.filter((m) => m.member_type === 'executive');
+  const withRole = executive.filter((m) => m.designation);
+  const others = executive.filter((m) => !m.designation);
 
   return (
     <main>
@@ -72,7 +75,7 @@ export default function Members({ go }) {
           <h1>Our Members</h1>
           <div className="np-sub">हाम्रा सदस्यहरू</div>
           <p>
-            Lifetime members and office-bearers bound together by the memory of Late Tulasiman
+            Executive members and office-bearers bound together by the memory of Late Tulasiman
             Shrestha and a shared commitment to education and folk heritage.
           </p>
         </div>
@@ -91,7 +94,7 @@ export default function Members({ go }) {
         </section>
       )}
 
-      {!loading && !error && members.length === 0 && (
+      {!loading && !error && executive.length === 0 && (
         <section className="section">
           <div className="container dash-empty">
             Members will be listed here once added from the admin dashboard.
@@ -116,16 +119,16 @@ export default function Members({ go }) {
         </section>
       )}
 
-      {!loading && lifetime.length > 0 && (
+      {!loading && others.length > 0 && (
         <section className={`section ${withRole.length ? 'tinted' : ''}`}>
           <div className="container">
             <div className="section-head">
-              <span className="kicker">आजीवन सदस्यहरू</span>
-              <h2>Lifetime members</h2>
+              <span className="kicker">कार्यसमिति सदस्यहरू</span>
+              <h2>Executive members</h2>
               <Divider />
             </div>
             <div className="member-grid">
-              {lifetime.map((m) => (
+              {others.map((m) => (
                 <MemberCard member={m} key={m.id} />
               ))}
             </div>

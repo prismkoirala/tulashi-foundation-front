@@ -1096,6 +1096,26 @@ button { font-family: var(--sans); }
   font-size: 0.85rem;
   color: var(--muted);
 }
+.dash-filter {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+}
+.dash-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.dash-badge-executive { background: var(--gold-soft); color: #8a5d10; border: 1px solid var(--gold); }
+.dash-badge-live { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
 .dash-alert {
   background: var(--crimson-soft);
   color: var(--crimson-deep);
@@ -1277,16 +1297,22 @@ button { font-family: var(--sans); }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
+  align-items: start;
 }
 .dash-form-grid label {
   display: grid;
   gap: 6px;
+  /* Pack label + input at the top: a taller neighbour in the same row
+     (e.g. Member type with its helper text) must not push this input down. */
+  align-content: start;
+  align-self: start;
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--himalaya);
 }
 .dash-form-grid label.full { grid-column: 1 / -1; }
 .dash-form-grid input,
+.dash-form-grid select,
 .dash-form-grid textarea {
   font-family: var(--sans);
   font-size: 0.95rem;
@@ -1296,6 +1322,7 @@ button { font-family: var(--sans); }
   background: var(--cream);
 }
 .dash-form-grid input:focus,
+.dash-form-grid select:focus,
 .dash-form-grid textarea:focus {
   outline: 2px solid var(--gold);
   background: #fff;

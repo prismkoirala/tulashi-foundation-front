@@ -23,24 +23,48 @@ const uploadFile = async (bucket, file) => {
   return publicUrl(bucket, path);
 };
 
-export async function fetchMembers() {
-  const { data, error } = await ensure()
+export const MEMBER_TYPES = [
+  { value: 'executive', label: 'Executive' },
+  { value: 'live', label: 'Live' },
+];
+
+export const DEFAULT_MEMBER_TYPE = 'live';
+
+export const normalizeMemberType = (value) =>
+  value === 'executive' ? 'executive' : 'live';
+
+/** Admin (no filter) gets all members; pass { memberType } to filter. */
+export async function fetchMembers({ memberType } = {}) {
+  let query = ensure()
     .from('members')
     .select('*')
     .order('sort_order', { ascending: true })
     .order('name', { ascending: true });
+  if (memberType) query = query.eq('member_type', normalizeMemberType(memberType));
+  const { data, error } = await query;
   if (error) throw error;
-  return data || [];
+  return (data || []).map((row) => ({ ...row, member_type: normalizeMemberType(row.member_type) }));
+}
+
+/** Public /members page — executive members only, never live members. */
+export async function fetchPublicMembers() {
+  return fetchMembers({ memberType: 'executive' });
 }
 
 export async function createMember(payload) {
-  const { data, error } = await ensure().from('members').insert(payload).select().single();
+  const { data, error } = await ensure()
+    .from('members')
+    .insert({ ...payload, member_type: normalizeMemberType(payload.member_type) })
+    .select()
+    .single();
   if (error) throw error;
   return data;
 }
 
 export async function updateMember(id, payload) {
-  const { data, error } = await ensure().from('members').update(payload).eq('id', id).select().single();
+  const clean = { ...payload };
+  if ('member_type' in clean) clean.member_type = normalizeMemberType(clean.member_type);
+  const { data, error } = await ensure().from('members').update(clean).eq('id', id).select().single();
   if (error) throw error;
   return data;
 }
