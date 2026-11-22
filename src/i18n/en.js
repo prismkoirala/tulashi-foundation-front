@@ -1,0 +1,218 @@
+const en = {
+  meta: {
+    title: 'Tulasiman Shrestha Memorial Society | Education & Folk Heritage',
+    description:
+      'Tulasiman Shrestha Memorial Society — a non-profit organisation in Nepal promoting education, folk literature, scholarships and social service in memory of Late Tulasiman Shrestha.',
+  },
+  nav: {
+    home: 'Home',
+    members: 'Members',
+    testimonials: 'Events',
+    faq: 'FAQ',
+    contact: 'Contact',
+    donate: 'Donate',
+    menu: 'Toggle navigation menu',
+    login: 'Admin login',
+    dashboard: 'Open dashboard',
+    language: 'Choose language',
+    english: 'English',
+    nepali: 'नेपाली',
+  },
+  brand: {
+    seal: 'Tulasiman Shrestha Memorial Society seal',
+    sealShort: 'TSMS seal',
+  },
+  footer: {
+    blurb:
+      'A non-profit society devoted to the memory of Late Tulasiman Shrestha — promoting education, folk literature and scholarships since 2073 B.S.',
+    explore: 'Explore',
+    reach: 'Reach Us',
+    rights: '© {year} Tulasiman Shrestha Memorial Society. All rights reserved.',
+    motto: 'शिक्षा, लोक साहित्य र सेवा — स्मृति नै प्रेरणा हो',
+  },
+  home: {
+    eyebrow: 'A memorial of service · Kathmandu, Nepal',
+    titleBefore: 'Honouring a life of',
+    titleEm: 'learning',
+    titleAfter: 'and folk heritage',
+    motto: 'शिक्षा, लोक साहित्य र सेवा — स्मृति नै प्रेरणा हो',
+    lead:
+      'In loving memory of Late Tulasiman Shrestha — educator and folk-literature scholar — our society promotes education, folk literature and music, scholarships for needy students, and programmes that inspire the next generation.',
+    support: 'Support Our Mission',
+    seeWork: 'See Our Work',
+    photoAlt: 'Students supported by the society',
+    who: 'Who we are',
+    promise: 'A promise kept since 2073 B.S.',
+    about1:
+      'The Tulasiman Shrestha Memorial Society is a non-profit social organisation founded in the name of Late Tulasiman Shrestha — a teacher and folk-literature scholar from Chyangli, Gorkha, who devoted his life to education and Nepali lore.',
+    about2:
+      'Registered with the District Administration Office, Kathmandu and the Social Welfare Council, the society has more than 80 lifetime members across Nepal and abroad. We honour his memory through folk-literature recognition, scholarships in Palungtar, and cultural and educational programmes.',
+    value1Title: 'Smriti — Remembrance',
+    value1Text: 'Keeping alive Late Tulasiman Shrestha’s ideas and contributions.',
+    value2Title: 'Shiksha — Education & Scholarship',
+    value2Text: 'Supporting meritorious students from economically humble homes.',
+    value3Title: 'Lok Sahitya — Folk Heritage',
+    value3Text: 'Uplifting Nepali folk literature and music through honour and programmes.',
+    impactKicker: 'Our impact',
+    impactTitle: 'A legacy carried forward',
+    impactText: 'Numbers tell only part of the story — but they are a beginning.',
+    statMembers: 'Lifetime Members',
+    statMembersNp: 'आजीवन सदस्यहरू',
+    statHonours: 'Folk Literature Honourees',
+    statHonoursNp: 'लोकसाहित्य सम्मान',
+    statSchools: 'Partner Schools, Palungtar',
+    statSchoolsNp: 'साझेदार विद्यालयहरू',
+    statYears: 'Years of Service',
+    statYearsNp: 'सेवाका वर्षहरू',
+    workKicker: 'What we do',
+    workTitle: 'Programmes rooted in his ideals',
+    workText:
+      'Each programme carries forward Late Tulasiman Shrestha’s commitment to education, folk literature and service to society.',
+    quoteNp: '"विद्या ददाति विनयम् — Knowledge bestows humility."',
+    quote:
+      '"Late Tulasiman Shrestha lit classrooms across Gorkha and beyond, and gave voice to Nepali folk literature. This society is our way of keeping that lamp burning."',
+    quoteCite: '— TULASIMAN SHRESTHA MEMORIAL SOCIETY',
+    ctaTitle: 'Carry the lamp forward with us',
+    ctaText:
+      'Become a member, support a scholarship, or join a cultural programme — every gesture honours a life devoted to education and folk heritage.',
+    ctaButton: 'Get in Touch',
+  },
+  programs: {
+    honour: {
+      np: 'लोकसाहित्य सम्मान',
+      title: 'Folk Literature Honour',
+      text: 'The Tulasiman Shrestha Folk Literature Honour (Rs 25,000) recognises personalities who enrich Nepali folk literature and folk music — continuing since 2075 B.S.',
+    },
+    scholarship: {
+      np: 'छात्रवृत्ति कार्यक्रम',
+      title: 'Scholarship Programme',
+      text: 'Need- and merit-based scholarships of Rs 10,000 for economically disadvantaged yet capable students at Jeevan Jyoti Secondary School and Rajgare Secondary School in Palungtar, Gorkha.',
+    },
+    endowment: {
+      np: 'अक्षय कोष',
+      title: 'Endowment Fund',
+      text: 'A lasting fund built from family contributions and lifetime membership fees — aimed at strengthening the folk literature honour and supporting partner schools in Palungtar.',
+    },
+    folk: {
+      np: 'लोक साहित्य र संगीत',
+      title: 'Folk Literature & Music',
+      text: 'Programmes that uplift and preserve Nepali folk literature and folk music, honouring the scholarly legacy of Late Tulasiman Shrestha.',
+    },
+    education: {
+      np: 'शिक्षा र संस्कृति',
+      title: 'Education & Culture',
+      text: 'Promoting education, social service and cultural activities so that learning and heritage walk hand in hand for the next generation.',
+    },
+    harmony: {
+      np: 'सद्भाव र प्रेरणा',
+      title: 'Harmony & Inspiration',
+      text: 'Programmes that inspire young people and advance cooperation, unity and goodwill in society — in memory of Late Tulasiman Shrestha’s ideals.',
+    },
+  },
+  members: {
+    title: 'Our Members',
+    np: 'हाम्रा सदस्यहरू',
+    lead:
+      'Executive members and office-bearers bound together by the memory of Late Tulasiman Shrestha and a shared commitment to education and folk heritage.',
+    loading: 'Loading members…',
+    unconfigured: 'Member list will appear once Supabase keys are configured.',
+    empty: 'Members will be listed here once added from the admin dashboard.',
+    committeeKicker: 'कार्यसमिति',
+    committeeTitle: 'Committee & designated roles',
+    executiveKicker: 'कार्यसमिति सदस्यहरू',
+    executiveTitle: 'Executive members',
+    biography: 'Biography',
+    hideBiography: 'Hide biography',
+    noBiography: 'No biography has been added yet.',
+    ctaTitle: 'Become part of the family',
+    ctaText:
+      'Lifetime membership is open to anyone who shares our cause. Join more than 80 members across Nepal and abroad, and help keep his lamp burning.',
+    ctaButton: 'Join the Society',
+  },
+  events: {
+    title: 'Events & Memories',
+    np: 'स्मृतिहरू र कार्यक्रमहरू',
+    lead:
+      'Scholarship days, folk literature honours, and gatherings — moments from the society’s journey in education and folk heritage.',
+    kicker: 'Gallery',
+    heading: 'Moments we hold dear',
+    text: 'Each entry includes place, story, and photographs from the day.',
+    loading: 'Loading events…',
+    unconfigured: 'Events will appear once Supabase keys are configured.',
+    empty: 'Events and memories will appear here once published from the admin dashboard.',
+    photo: '{title} photo {n}',
+    close: 'Close',
+    previous: 'Previous image',
+    next: 'Next image',
+  },
+  faq: {
+    title: 'Frequently Asked Questions',
+    np: 'धेरैजसो सोधिने प्रश्नहरू',
+    lead:
+      'Everything you might wish to know about our society, folk literature honour, scholarships, and how you can take part. Still curious? We are only a message away.',
+    kicker: 'Good to know',
+    heading: 'Answers, with warmth',
+    ctaTitle: "Didn't find your answer?",
+    ctaText: 'Write to us or visit our office — a cup of chiya and an honest conversation await you.',
+    ctaButton: 'Ask Us Directly',
+    items: {
+      what: {
+        q: 'What is the Tulasiman Shrestha Memorial Society?',
+        a: 'We are a non-profit social organisation established in the name of Late Tulasiman Shrestha after his passing in 2073 B.S. Registered with the District Administration Office, Kathmandu (Reg. No. 652) and the Social Welfare Council (Reg. No. 47530), we honour his legacy through folk literature, education, scholarships and social service.',
+      },
+      objectives: {
+        q: 'What are the main objectives of the society?',
+        a: 'To remember Late Tulasiman Shrestha’s ideas and contributions; promote folk literature and folk music; advance education, social service and cultural activities; inspire the new generation; foster cooperation, unity and harmony; and provide scholarships to economically disadvantaged and meritorious students.',
+      },
+      honour: {
+        q: 'What is the Tulasiman Shrestha Folk Literature Honour?',
+        a: 'It is an annual honour of Rs 25,000 awarded to personalities working for the upliftment of Nepali folk literature and folk music. Recipients since 2075 B.S. include Prof. Dr. Chudamani Bandhu, Satya Mohan Joshi, Nanda Krishna Joshi, Gyanu Rana, Prof. Tulasi Diwas, Prof. Dr. Kusumakar Neupane, Raju Pariyar and Raju Babu Shrestha.',
+      },
+      scholarship: {
+        q: 'Who receives the Tulasiman Shrestha Scholarship?',
+        a: 'Economically disadvantaged and meritorious students studying at Shree Jeevan Jyoti Secondary School, Biruwatar, Palungtar and Shree Rajgare Secondary School, Kamaltar, Palungtar in Gorkha district. Each scholarship is Rs 10,000, and the programme continues every year.',
+      },
+      funding: {
+        q: 'How is the society funded?',
+        a: 'Through contributions from Late Tulasiman Shrestha’s family and relatives, lifetime membership fees, and support from well-wishers. An endowment fund (अक्षय कोष) has been established to sustain the folk literature honour and school support.',
+      },
+      membership: {
+        q: 'Can I become a member or support the society?',
+        a: 'Yes. The society has more than 80 lifetime members across Nepal, the USA, Germany, Taiwan, Denmark and elsewhere. Reach us through the contact page to learn about membership, donations or volunteering.',
+      },
+      where: {
+        q: 'Where does the society operate?',
+        a: 'Our office is in Anamnagar, Kathmandu (Ward No. 16). Scholarship programmes currently support partner schools in Palungtar Municipality, Gorkha — the home region of Late Tulasiman Shrestha.',
+      },
+      registered: {
+        q: 'Is the society officially registered?',
+        a: 'Yes. It is registered under the Association Registration Act 2034 at the District Administration Office, Kathmandu (Reg. No. 652) and under the Social Welfare Act 2049 with the Social Welfare Council, Lainchaur (Reg. No. 47530).',
+      },
+    },
+  },
+  contact: {
+    title: 'Contact Us',
+    np: 'सम्पर्क गर्नुहोस्',
+    lead:
+      'Whether you wish to support a scholarship, become a member, or learn about our folk literature programmes — our door, and our hearts, are open.',
+    kicker: 'Reach out',
+    heading: 'We would love to hear from you',
+    org: 'Tulasiman Shrestha Memorial Society',
+    orgNp: 'तुलसीमान श्रेष्ठ स्मृति समाज',
+    addressLabel: 'Office Address',
+    address: 'Ward No. 16, Anamnagar, Kathmandu Metropolitan City, Nepal',
+    phoneLabel: 'Phone',
+    emailLabel: 'Email',
+    hoursLabel: 'Office Hours',
+    hours: 'Sunday – Friday, 10:00 AM – 5:00 PM',
+    name: 'Your full name',
+    email: 'Email address',
+    subject: 'Subject (e.g. Membership, scholarship)',
+    message: 'Your message…',
+    sent: 'Dhanyabad! Your message has been noted. We will reply within a few days.',
+    send: 'Send Message',
+    map: 'Tulasiman Shrestha Memorial Society — location map',
+  },
+};
+
+export default en;

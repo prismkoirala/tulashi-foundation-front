@@ -60,77 +60,23 @@ export const GALLERY = [
 ];
 
 export const PROGRAMS = [
-  {
-    np: 'लोकसाहित्य सम्मान',
-    title: 'Folk Literature Honour',
-    text: 'The Tulasiman Shrestha Folk Literature Honour (Rs 25,000) recognises personalities who enrich Nepali folk literature and folk music — continuing since 2075 B.S.',
-    icon: 'award',
-  },
-  {
-    np: 'छात्रवृत्ति कार्यक्रम',
-    title: 'Scholarship Programme',
-    text: 'Need- and merit-based scholarships of Rs 10,000 for economically disadvantaged yet capable students at Jeevan Jyoti Secondary School and Rajgare Secondary School in Palungtar, Gorkha.',
-    icon: 'book',
-  },
-  {
-    np: 'अक्षय कोष',
-    title: 'Endowment Fund',
-    text: 'A lasting fund built from family contributions and lifetime membership fees — aimed at strengthening the folk literature honour and supporting partner schools in Palungtar.',
-    icon: 'heart',
-  },
-  {
-    np: 'लोक साहित्य र संगीत',
-    title: 'Folk Literature & Music',
-    text: 'Programmes that uplift and preserve Nepali folk literature and folk music, honouring the scholarly legacy of Late Tulasiman Shrestha.',
-    icon: 'lamp',
-  },
-  {
-    np: 'शिक्षा र संस्कृति',
-    title: 'Education & Culture',
-    text: 'Promoting education, social service and cultural activities so that learning and heritage walk hand in hand for the next generation.',
-    icon: 'pencil',
-  },
-  {
-    np: 'सद्भाव र प्रेरणा',
-    title: 'Harmony & Inspiration',
-    text: 'Programmes that inspire young people and advance cooperation, unity and goodwill in society — in memory of Late Tulasiman Shrestha\'s ideals.',
-    icon: 'users',
-  },
+  { id: 'honour', icon: 'award' },
+  { id: 'scholarship', icon: 'book' },
+  { id: 'endowment', icon: 'heart' },
+  { id: 'folk', icon: 'lamp' },
+  { id: 'education', icon: 'pencil' },
+  { id: 'harmony', icon: 'users' },
 ];
 
 export const FAQS = [
-  {
-    q: 'What is the Tulasiman Shrestha Memorial Society?',
-    a: 'We are a non-profit social organisation established in the name of Late Tulasiman Shrestha after his passing in 2073 B.S. Registered with the District Administration Office, Kathmandu (Reg. No. 652) and the Social Welfare Council (Reg. No. 47530), we honour his legacy through folk literature, education, scholarships and social service.',
-  },
-  {
-    q: 'What are the main objectives of the society?',
-    a: 'To remember Late Tulasiman Shrestha\'s ideas and contributions; promote folk literature and folk music; advance education, social service and cultural activities; inspire the new generation; foster cooperation, unity and harmony; and provide scholarships to economically disadvantaged and meritorious students.',
-  },
-  {
-    q: 'What is the Tulasiman Shrestha Folk Literature Honour?',
-    a: 'It is an annual honour of Rs 25,000 awarded to personalities working for the upliftment of Nepali folk literature and folk music. Recipients since 2075 B.S. include Prof. Dr. Chudamani Bandhu, Satya Mohan Joshi, Nanda Krishna Joshi, Gyanu Rana, Prof. Tulasi Diwas, Prof. Dr. Kusumakar Neupane, Raju Pariyar and Raju Babu Shrestha.',
-  },
-  {
-    q: 'Who receives the Tulasiman Shrestha Scholarship?',
-    a: 'Economically disadvantaged and meritorious students studying at Shree Jeevan Jyoti Secondary School, Biruwatar, Palungtar and Shree Rajgare Secondary School, Kamaltar, Palungtar in Gorkha district. Each scholarship is Rs 10,000, and the programme continues every year.',
-  },
-  {
-    q: 'How is the society funded?',
-    a: 'Through contributions from Late Tulasiman Shrestha\'s family and relatives, lifetime membership fees, and support from well-wishers. An endowment fund (अक्षय कोष) has been established to sustain the folk literature honour and school support.',
-  },
-  {
-    q: 'Can I become a member or support the society?',
-    a: 'Yes. The society has more than 80 lifetime members across Nepal, the USA, Germany, Taiwan, Denmark and elsewhere. Reach us through the contact page to learn about membership, donations or volunteering.',
-  },
-  {
-    q: 'Where does the society operate?',
-    a: 'Our office is in Anamnagar, Kathmandu (Ward No. 16). Scholarship programmes currently support partner schools in Palungtar Municipality, Gorkha — the home region of Late Tulasiman Shrestha.',
-  },
-  {
-    q: 'Is the society officially registered?',
-    a: 'Yes. It is registered under the Association Registration Act 2034 at the District Administration Office, Kathmandu (Reg. No. 652) and under the Social Welfare Act 2049 with the Social Welfare Council, Lainchaur (Reg. No. 47530).',
-  },
+  { id: 'what' },
+  { id: 'objectives' },
+  { id: 'honour' },
+  { id: 'scholarship' },
+  { id: 'funding' },
+  { id: 'membership' },
+  { id: 'where' },
+  { id: 'registered' },
 ];
 
 export const CONTACT = {

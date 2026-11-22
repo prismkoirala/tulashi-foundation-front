@@ -1,122 +1,123 @@
 import { useEffect, useState } from 'react';
 import {
-  createMember,
-  DEFAULT_MEMBER_TYPE,
   deleteMember,
-  fetchMembers,
+  fetchMembersPage,
   MEMBER_TYPES,
   normalizeMemberType,
-  updateMember,
-  uploadMemberImage,
 } from '../lib/api.js';
 
-const empty = {
-  name: '',
+const DEFAULT_FILTERS = {
+  q: '',
+  memberType: 'all',
+  designation: '',
   address: '',
-  permanent_address: '',
   email: '',
   phone: '',
-  designation: '',
-  member_type: DEFAULT_MEMBER_TYPE,
-  image_url: '',
-  sort_order: 0,
+  hasPhoto: 'any',
+  hasDesignation: 'any',
+  createdFrom: '',
+  createdTo: '',
+  sort: 'sort_order',
 };
 
+const PAGE_SIZES = [10, 25, 50];
+
 const memberTypeLabel = (value) =>
-  MEMBER_TYPES.find((t) => t.value === normalizeMemberType(value))?.label || 'Live';
+  MEMBER_TYPES.find((t) => t.value === normalizeMemberType(value))?.label || 'Life';
 
-export default function MembersAdmin() {
+const useDebounced = (value, ms) => {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), ms);
+    return () => clearTimeout(timer);
+  }, [value, ms]);
+  return debounced;
+};
+
+const pageWindow = (page, totalPages) => {
+  const width = 5;
+  let start = Math.max(1, page - 2);
+  let end = Math.min(totalPages, start + width - 1);
+  start = Math.max(1, end - width + 1);
+  const pages = [];
+  for (let i = start; i <= end; i += 1) pages.push(i);
+  return pages;
+};
+
+export default function MembersAdmin({ go }) {
   const [rows, setRows] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadedOnce, setLoadedOnce] = useState(false);
   const [error, setError] = useState('');
-  const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState(empty);
-  const [file, setFile] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [q, setQ] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-
-  const load = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      setRows(await fetchMembers());
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [reloadKey, setReloadKey] = useState(0);
+  const debouncedFilters = useDebounced(filters, 300);
+  const filterKey = JSON.stringify(debouncedFilters);
+  const [pageFilterKey, setPageFilterKey] = useState(filterKey);
+  if (pageFilterKey !== filterKey) {
+    setPageFilterKey(filterKey);
+    if (page !== 1) setPage(1);
+  }
 
   useEffect(() => {
+    const ac = new AbortController();
+    const load = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const result = await fetchMembersPage({
+          ...debouncedFilters,
+          page,
+          pageSize,
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        setRows(result.rows);
+        setTotal(result.total);
+      } catch (err) {
+        if (ac.signal.aborted) return;
+        setError(err.message || 'Could not load members');
+      } finally {
+        if (!ac.signal.aborted) {
+          setLoading(false);
+          setLoadedOnce(true);
+        }
+      }
+    };
     load();
-  }, []);
 
-  const openCreate = () => {
-    setEditing('new');
-    setForm(empty);
-    setFile(null);
-  };
+    return () => ac.abort();
+  }, [filterKey, debouncedFilters, page, pageSize, reloadKey]);
 
-  const openEdit = (row) => {
-    setEditing(row.id);
-    setForm({
-      name: row.name || '',
-      address: row.address || '',
-      permanent_address: row.permanent_address || '',
-      email: row.email || '',
-      phone: row.phone || '',
-      designation: row.designation || '',
-      member_type: normalizeMemberType(row.member_type),
-      image_url: row.image_url || '',
-      sort_order: row.sort_order ?? 0,
-    });
-    setFile(null);
-  };
+  const patchFilters = (patch) => setFilters((current) => ({ ...current, ...patch }));
 
-  const closeForm = () => {
-    setEditing(null);
-    setForm(empty);
-    setFile(null);
-  };
+  const advancedCount = [
+    filters.designation,
+    filters.address,
+    filters.email,
+    filters.phone,
+    filters.createdFrom,
+    filters.createdTo,
+    filters.hasPhoto !== 'any' ? filters.hasPhoto : '',
+    filters.hasDesignation !== 'any' ? filters.hasDesignation : '',
+    filters.sort !== 'sort_order' ? filters.sort : '',
+  ].filter(Boolean).length;
 
-  const setField = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
-
-  const onSave = async (e) => {
-    e.preventDefault();
-    setBusy(true);
-    setError('');
-    try {
-      let image_url = form.image_url || null;
-      if (file) image_url = await uploadMemberImage(file);
-      const payload = {
-        name: form.name.trim(),
-        address: form.address.trim() || null,
-        permanent_address: form.permanent_address.trim() || null,
-        email: form.email.trim() || null,
-        phone: form.phone.trim() || null,
-        designation: form.designation.trim() || null,
-        member_type: normalizeMemberType(form.member_type),
-        image_url,
-        sort_order: Number(form.sort_order) || 0,
-      };
-      if (editing === 'new') await createMember(payload);
-      else await updateMember(editing, payload);
-      closeForm();
-      await load();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
-  };
+  const filtersActive =
+    advancedCount > 0 || filters.q.trim() !== '' || filters.memberType !== 'all';
 
   const onDelete = async (row) => {
     if (!window.confirm(`Delete member “${row.name}”?`)) return;
     setBusy(true);
     try {
       await deleteMember(row.id);
-      await load();
+      if (rows.length === 1 && page > 1) setPage((current) => current - 1);
+      else setReloadKey((key) => key + 1);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -124,21 +125,19 @@ export default function MembersAdmin() {
     }
   };
 
-  const filtered = rows.filter((r) => {
-    if (typeFilter !== 'all' && normalizeMemberType(r.member_type) !== typeFilter) return false;
-    const hay =
-      `${r.name} ${r.address || ''} ${r.designation || ''} ${r.email || ''} ${memberTypeLabel(r.member_type)} ${normalizeMemberType(r.member_type)}`.toLowerCase();
-    return hay.includes(q.trim().toLowerCase());
-  });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const rangeFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const rangeTo = Math.min(page * pageSize, total);
+  const pages = pageWindow(page, totalPages);
 
   return (
     <div className="dash-panel">
       <div className="dash-panel-head">
         <div>
           <h2>Members</h2>
-          <p>Executive members appear on the public Members page. Live members are admin-only.</p>
+          <p>Executive members appear on the public Members page. Life members are admin-only.</p>
         </div>
-        <button type="button" className="btn btn-crimson" onClick={openCreate}>
+        <button type="button" className="btn btn-crimson" onClick={() => go('dashboard/members/new')}>
           Add member
         </button>
       </div>
@@ -146,14 +145,15 @@ export default function MembersAdmin() {
       <div className="dash-toolbar">
         <input
           className="dash-search"
-          placeholder="Search by name, address, designation…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search by name, address, designation, email, phone…"
+          value={filters.q}
+          onChange={(e) => patchFilters({ q: e.target.value })}
+          aria-label="Search members"
         />
         <select
           className="dash-filter"
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
+          value={filters.memberType}
+          onChange={(e) => patchFilters({ memberType: e.target.value })}
           aria-label="Filter by member type"
         >
           <option value="all">All types</option>
@@ -163,16 +163,124 @@ export default function MembersAdmin() {
             </option>
           ))}
         </select>
-        <span className="dash-count">{filtered.length} shown</span>
+        <button
+          type="button"
+          className={`dash-filter dash-filter-toggle${advancedOpen || advancedCount ? ' active' : ''}`}
+          aria-expanded={advancedOpen}
+          onClick={() => setAdvancedOpen((open) => !open)}
+        >
+          Advanced filters{advancedCount ? ` (${advancedCount})` : ''}
+        </button>
+        <span className="dash-count">
+          {loading && loadedOnce ? 'Updating…' : `${total} member${total === 1 ? '' : 's'}`}
+        </span>
       </div>
 
+      {advancedOpen && (
+        <div className="dash-advanced">
+          <label>
+            Designation
+            <input
+              value={filters.designation}
+              onChange={(e) => patchFilters({ designation: e.target.value })}
+              placeholder="Contains…"
+            />
+          </label>
+          <label>
+            Address
+            <input
+              value={filters.address}
+              onChange={(e) => patchFilters({ address: e.target.value })}
+              placeholder="Current or permanent"
+            />
+          </label>
+          <label>
+            Email
+            <input
+              value={filters.email}
+              onChange={(e) => patchFilters({ email: e.target.value })}
+              placeholder="Contains…"
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              value={filters.phone}
+              onChange={(e) => patchFilters({ phone: e.target.value })}
+              placeholder="Contains…"
+            />
+          </label>
+          <label>
+            Photo
+            <select
+              value={filters.hasPhoto}
+              onChange={(e) => patchFilters({ hasPhoto: e.target.value })}
+            >
+              <option value="any">Any</option>
+              <option value="yes">With photo</option>
+              <option value="no">Without photo</option>
+            </select>
+          </label>
+          <label>
+            Role
+            <select
+              value={filters.hasDesignation}
+              onChange={(e) => patchFilters({ hasDesignation: e.target.value })}
+            >
+              <option value="any">Any</option>
+              <option value="yes">With designation</option>
+              <option value="no">Without designation</option>
+            </select>
+          </label>
+          <label>
+            Created from
+            <input
+              type="date"
+              value={filters.createdFrom}
+              onChange={(e) => patchFilters({ createdFrom: e.target.value })}
+            />
+          </label>
+          <label>
+            Created to
+            <input
+              type="date"
+              value={filters.createdTo}
+              onChange={(e) => patchFilters({ createdTo: e.target.value })}
+            />
+          </label>
+          <label>
+            Sort
+            <select value={filters.sort} onChange={(e) => patchFilters({ sort: e.target.value })}>
+              <option value="sort_order">Sort order</option>
+              <option value="name_asc">Name A–Z</option>
+              <option value="name_desc">Name Z–A</option>
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="designation">Designation</option>
+            </select>
+          </label>
+          <div className="dash-advanced-actions">
+            <button
+              type="button"
+              className="dash-clear"
+              disabled={!filtersActive}
+              onClick={() => setFilters(DEFAULT_FILTERS)}
+            >
+              Clear filters
+            </button>
+          </div>
+        </div>
+      )}
+
       {error && <div className="dash-alert">{error}</div>}
-      {loading ? (
+      {!loadedOnce && loading ? (
         <div className="dash-empty">Loading members…</div>
-      ) : filtered.length === 0 ? (
-        <div className="dash-empty">No members yet. Add the first one.</div>
+      ) : rows.length === 0 ? (
+        <div className="dash-empty">
+          {filtersActive ? 'No members match these filters.' : 'No members yet. Add the first one.'}
+        </div>
       ) : (
-        <div className="dash-table-wrap">
+        <div className={`dash-table-wrap${loading ? ' is-loading' : ''}`}>
           <table className="dash-table">
             <thead>
               <tr>
@@ -181,11 +289,11 @@ export default function MembersAdmin() {
                 <th>Contact</th>
                 <th>Designation</th>
                 <th>Type</th>
-                <th />
+                <th className="dash-row-actions">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((row) => (
+              {rows.map((row) => (
                 <tr key={row.id}>
                   <td>
                     <div className="dash-person">
@@ -215,13 +323,15 @@ export default function MembersAdmin() {
                       {memberTypeLabel(row.member_type)}
                     </span>
                   </td>
-                  <td className="dash-actions">
-                    <button type="button" onClick={() => openEdit(row)}>
-                      Edit
-                    </button>
-                    <button type="button" className="danger" onClick={() => onDelete(row)}>
-                      Delete
-                    </button>
+                  <td className="dash-row-actions">
+                    <div className="dash-actions">
+                      <button type="button" onClick={() => go(`dashboard/members/${row.id}`)}>
+                        Edit
+                      </button>
+                      <button type="button" className="danger" onClick={() => onDelete(row)} disabled={busy}>
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -230,90 +340,69 @@ export default function MembersAdmin() {
         </div>
       )}
 
-      {editing && (
-        <div className="dash-modal" role="dialog" aria-modal="true">
-          <form className="dash-modal-card" onSubmit={onSave}>
-            <div className="dash-modal-head">
-              <h3>{editing === 'new' ? 'Add member' : 'Edit member'}</h3>
-              <button type="button" className="dash-x" onClick={closeForm} aria-label="Close">
-                ×
+      {loadedOnce && total > 0 && (
+        <div className="dash-pager">
+          <span className="dash-count">
+            Showing {rangeFrom}–{rangeTo} of {total}
+          </span>
+          <div className="dash-pager-pages">
+            <button type="button" onClick={() => setPage(1)} disabled={page === 1 || loading}>
+              First
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              disabled={page === 1 || loading}
+            >
+              Previous
+            </button>
+            {pages.map((n) => (
+              <button
+                key={n}
+                type="button"
+                aria-current={n === page ? 'page' : undefined}
+                onClick={() => setPage(n)}
+                disabled={loading}
+              >
+                {n}
               </button>
-            </div>
-            <div className="dash-form-grid">
-              <label>
-                Name *
-                <input value={form.name} onChange={setField('name')} required />
-              </label>
-              <label>
-                Designation
-                <input
-                  value={form.designation}
-                  onChange={setField('designation')}
-                  placeholder="e.g. President, Lifetime Member"
-                />
-              </label>
-              <label>
-                Member type *
-                <select value={form.member_type} onChange={setField('member_type')}>
-                  {MEMBER_TYPES.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-                <span className="dash-tiny">
-                  Executive = shown on public Members page · Live = admin-only
-                </span>
-              </label>
-              <label>
-                Address (current)
-                <input value={form.address} onChange={setField('address')} />
-              </label>
-              <label>
-                Permanent address
-                <input value={form.permanent_address} onChange={setField('permanent_address')} />
-              </label>
-              <label>
-                Email
-                <input type="email" value={form.email} onChange={setField('email')} />
-              </label>
-              <label>
-                Phone
-                <input value={form.phone} onChange={setField('phone')} />
-              </label>
-              <label>
-                Sort order
-                <input
-                  type="number"
-                  value={form.sort_order}
-                  onChange={setField('sort_order')}
-                />
-              </label>
-              <label>
-                Photo
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                />
-              </label>
-            </div>
-            {(form.image_url || file) && (
-              <div className="dash-preview">
-                <img src={file ? URL.createObjectURL(file) : form.image_url} alt="" />
-              </div>
-            )}
-            <div className="dash-modal-actions">
-              <button type="button" className="btn btn-outline-ink" onClick={closeForm}>
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-crimson" disabled={busy}>
-                {busy ? 'Saving…' : 'Save'}
-              </button>
-            </div>
-          </form>
+            ))}
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              disabled={page >= totalPages || loading}
+            >
+              Next
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage(totalPages)}
+              disabled={page >= totalPages || loading}
+            >
+              Last
+            </button>
+          </div>
+          <label className="dash-count">
+            Rows{' '}
+            <select
+              className="dash-page-size"
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              aria-label="Rows per page"
+            >
+              {PAGE_SIZES.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       )}
+
     </div>
   );
 }

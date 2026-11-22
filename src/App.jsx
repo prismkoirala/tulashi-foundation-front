@@ -17,10 +17,12 @@ const parseRoute = () => {
 
   if (parts[0] === 'login') return { area: 'login', page: 'login' }
   if (parts[0] === 'dashboard') {
+    const memberEditor = parts[1] === 'members' && parts[2] ? parts[2] : null
     return {
       area: 'dashboard',
       page: 'dashboard',
       tab: parts[1] === 'testimonials' ? 'testimonials' : 'members',
+      memberEditor,
     }
   }
 
@@ -55,7 +57,9 @@ function AppShell() {
     <>
       <Navbar page={route.page} go={go} hideChrome={hideChrome} />
       {route.area === 'login' && <Login go={go} />}
-      {route.area === 'dashboard' && <Dashboard tab={route.tab} go={go} />}
+      {route.area === 'dashboard' && (
+        <Dashboard tab={route.tab} memberEditor={route.memberEditor} go={go} />
+      )}
       {route.area === 'public' && route.page === 'home' && <Home go={go} />}
       {route.area === 'public' && route.page === 'members' && <Members go={go} />}
       {route.area === 'public' && route.page === 'testimonials' && <Testimonials />}

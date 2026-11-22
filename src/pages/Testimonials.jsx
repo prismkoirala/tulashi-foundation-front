@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Mountains, Divider } from '../components/Decor.jsx';
 import { fetchTestimonials } from '../lib/api.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
+import { NpLine, useI18n } from '../i18n/I18nContext.jsx';
 
 export default function Testimonials() {
+  const { t } = useI18n();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -14,7 +16,7 @@ export default function Testimonials() {
     (async () => {
       if (!isSupabaseConfigured) {
         setLoading(false);
-        setError('Events will appear once Supabase keys are configured.');
+        setError('config');
         return;
       }
       try {
@@ -78,12 +80,9 @@ export default function Testimonials() {
     <main>
       <section className="page-hero">
         <div className="container">
-          <h1>Events &amp; Memories</h1>
-          <div className="np-sub">स्मृतिहरू र कार्यक्रमहरू</div>
-          <p>
-            Scholarship days, folk literature honours, and gatherings — moments from the society’s
-            journey in education and folk heritage.
-          </p>
+          <h1>{t('events.title')}</h1>
+          <NpLine k="events.np" />
+          <p>{t('events.lead')}</p>
         </div>
         <Mountains />
       </section>
@@ -91,18 +90,18 @@ export default function Testimonials() {
       <section className="section">
         <div className="container">
           <div className="section-head">
-            <span className="kicker">Gallery</span>
-            <h2>Moments we hold dear</h2>
-            <p>Each entry includes place, story, and photographs from the day.</p>
+            <span className="kicker">{t('events.kicker')}</span>
+            <h2>{t('events.heading')}</h2>
+            <p>{t('events.text')}</p>
             <Divider />
           </div>
 
-          {loading && <div className="dash-empty">Loading events…</div>}
-          {!loading && error && <div className="dash-alert">{error}</div>}
+          {loading && <div className="dash-empty">{t('events.loading')}</div>}
+          {!loading && error && (
+            <div className="dash-alert">{error === 'config' ? t('events.unconfigured') : error}</div>
+          )}
           {!loading && !error && items.length === 0 && (
-            <div className="dash-empty">
-              Events and memories will appear here once published from the admin dashboard.
-            </div>
+            <div className="dash-empty">{t('events.empty')}</div>
           )}
 
           <div className="event-list">
@@ -123,7 +122,7 @@ export default function Testimonials() {
                         className="event-thumb"
                         key={img.id}
                         onClick={() => openFromItem(item, i)}
-                        aria-label={`${item.title} photo ${i + 1}`}
+                        aria-label={t('events.photo', { title: item.title, n: i + 1 })}
                       >
                         <img src={img.image_url} alt="" loading="lazy" />
                       </button>
@@ -138,7 +137,7 @@ export default function Testimonials() {
 
       {active !== null && flatImages[active] && (
         <div className="lightbox" onClick={close} role="dialog" aria-modal="true">
-          <button className="lb-btn lb-close" onClick={close} aria-label="Close">
+          <button className="lb-btn lb-close" onClick={close} aria-label={t('events.close')}>
             ×
           </button>
           <button
@@ -147,7 +146,7 @@ export default function Testimonials() {
               e.stopPropagation();
               step(-1);
             }}
-            aria-label="Previous image"
+            aria-label={t('events.previous')}
           >
             ‹
           </button>
@@ -162,7 +161,7 @@ export default function Testimonials() {
               e.stopPropagation();
               step(1);
             }}
-            aria-label="Next image"
+            aria-label={t('events.next')}
           >
             ›
           </button>

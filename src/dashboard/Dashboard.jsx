@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { LOGO_URL } from '../data.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import MembersAdmin from './MembersAdmin.jsx';
 import TestimonialsAdmin from './TestimonialsAdmin.jsx';
 
-export default function Dashboard({ tab = 'members', go }) {
+const MemberEditor = lazy(() => import('./MemberEditor.jsx'));
+
+export default function Dashboard({ tab = 'members', memberEditor = null, go }) {
   const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
@@ -61,7 +63,15 @@ export default function Dashboard({ tab = 'members', go }) {
         </div>
       </aside>
       <section className="dash-main">
-        {tab === 'testimonials' ? <TestimonialsAdmin /> : <MembersAdmin />}
+        {tab === 'testimonials' ? (
+          <TestimonialsAdmin />
+        ) : memberEditor ? (
+          <Suspense fallback={<div className="dash-empty">Loading editor…</div>}>
+            <MemberEditor memberId={memberEditor} go={go} />
+          </Suspense>
+        ) : (
+          <MembersAdmin go={go} />
+        )}
       </section>
     </main>
   );

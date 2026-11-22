@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { CONTACT } from '../data.js';
 import { Mountains, Divider, Icon } from '../components/Decor.jsx';
+import { NpLine, useI18n } from '../i18n/I18nContext.jsx';
 
 export default function Contact() {
+  const { t } = useI18n();
   const [sent, setSent] = useState(false);
 
   const handleSubmit = (e) => {
@@ -15,12 +17,9 @@ export default function Contact() {
     <main>
       <section className="page-hero">
         <div className="container">
-          <h1>Contact Us</h1>
-          <div className="np-sub">सम्पर्क गर्नुहोस्</div>
-          <p>
-            Whether you wish to support a scholarship, become a member, or learn about our folk
-            literature programmes — our door, and our hearts, are open.
-          </p>
+          <h1>{t('contact.title')}</h1>
+          <NpLine k="contact.np" />
+          <p>{t('contact.lead')}</p>
         </div>
         <Mountains />
       </section>
@@ -28,22 +27,22 @@ export default function Contact() {
       <section className="section">
         <div className="container">
           <div className="section-head">
-            <span className="kicker">Reach out</span>
-            <h2>We would love to hear from you</h2>
+            <span className="kicker">{t('contact.kicker')}</span>
+            <h2>{t('contact.heading')}</h2>
             <Divider />
           </div>
           <div className="contact-grid">
             <div className="contact-card">
-              <h3>Tulasiman Shrestha Memorial Society</h3>
-              <div className="np-sub">तुलसीमान श्रेष्ठ स्मृति समाज</div>
+              <h3>{t('contact.org')}</h3>
+              <NpLine k="contact.orgNp" />
               <div className="contact-rows">
                 <div className="contact-row">
                   <span className="ic">
                     <Icon name="pin" size={22} />
                   </span>
                   <div>
-                    <strong>Office Address</strong>
-                    <span>{CONTACT.address}</span>
+                    <strong>{t('contact.addressLabel')}</strong>
+                    <span>{t('contact.address')}</span>
                   </div>
                 </div>
                 <div className="contact-row">
@@ -51,7 +50,7 @@ export default function Contact() {
                     <Icon name="phone" size={22} />
                   </span>
                   <div>
-                    <strong>Phone</strong>
+                    <strong>{t('contact.phoneLabel')}</strong>
                     <a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a>
                     {CONTACT.mobile ? (
                       <>
@@ -66,7 +65,7 @@ export default function Contact() {
                     <Icon name="mail" size={22} />
                   </span>
                   <div>
-                    <strong>Email</strong>
+                    <strong>{t('contact.emailLabel')}</strong>
                     <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
                   </div>
                 </div>
@@ -75,33 +74,29 @@ export default function Contact() {
                     <Icon name="clock" size={22} />
                   </span>
                   <div>
-                    <strong>Office Hours</strong>
-                    <span>{CONTACT.hours}</span>
+                    <strong>{t('contact.hoursLabel')}</strong>
+                    <span>{t('contact.hours')}</span>
                   </div>
                 </div>
               </div>
 
               <form className="contact-form" onSubmit={handleSubmit}>
                 <div className="row2">
-                  <input type="text" name="name" placeholder="Your full name" required />
-                  <input type="email" name="email" placeholder="Email address" required />
+                  <input type="text" name="name" placeholder={t('contact.name')} required />
+                  <input type="email" name="email" placeholder={t('contact.email')} required />
                 </div>
-                <input type="text" name="subject" placeholder="Subject (e.g. Membership, scholarship)" />
-                <textarea name="message" placeholder="Your message…" required />
-                {sent && (
-                  <div className="form-note">
-                    Dhanyabad! Your message has been noted. We will reply within a few days.
-                  </div>
-                )}
+                <input type="text" name="subject" placeholder={t('contact.subject')} />
+                <textarea name="message" placeholder={t('contact.message')} required />
+                {sent && <div className="form-note">{t('contact.sent')}</div>}
                 <button type="submit" className="btn btn-crimson" style={{ justifySelf: 'start' }}>
-                  Send Message
+                  {t('contact.send')}
                 </button>
               </form>
             </div>
 
             <div className="map-frame">
               <iframe
-                title="Tulasiman Shrestha Memorial Society — location map"
+                title={t('contact.map')}
                 src={CONTACT.mapEmbed}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

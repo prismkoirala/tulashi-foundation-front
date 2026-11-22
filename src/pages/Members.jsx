@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Mountains, Divider } from '../components/Decor.jsx';
 import { fetchPublicMembers } from '../lib/api.js';
+import { bioIsEmpty, sanitizeBio } from '../lib/bio.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
+import { NpLine, useI18n } from '../i18n/I18nContext.jsx';
 
 const initials = (name = '') =>
   name
@@ -14,29 +16,54 @@ const initials = (name = '') =>
     .join('')
     .toUpperCase() || '?';
 
-function MemberCard({ member }) {
+function MemberCard({ member, open, onToggle }) {
+  const { t } = useI18n();
+  const bio = sanitizeBio(member.bio);
+  const hasBio = !bioIsEmpty(bio);
+
   return (
-    <article className="member-card">
-      <div className="member-photo" aria-hidden="true">
-        {member.image_url ? (
-          <img src={member.image_url} alt="" className="member-photo-img" />
-        ) : (
-          <span className="member-initials">{initials(member.name)}</span>
-        )}
-      </div>
-      <h3>{member.name}</h3>
-      {member.designation && <span className="member-role">{member.designation}</span>}
-      {(member.address || member.permanent_address) && (
-        <span className="member-meta">
-          {member.address || member.permanent_address}
-        </span>
+    <article className={`member-card${open ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="member-card-toggle"
+        aria-expanded={open}
+        onClick={onToggle}
+      >
+        <div className="member-photo" aria-hidden="true">
+          {member.image_url ? (
+            <img src={member.image_url} alt="" className="member-photo-img" />
+          ) : (
+            <span className="member-initials">{initials(member.name)}</span>
+          )}
+        </div>
+        <div className="member-card-copy">
+          <h3>{member.name}</h3>
+          {member.designation && <span className="member-role">{member.designation}</span>}
+          {(member.address || member.permanent_address) && (
+            <span className="member-meta">
+              {member.address || member.permanent_address}
+            </span>
+          )}
+          <span className="member-expand">{open ? t('members.hideBiography') : t('members.biography')}</span>
+        </div>
+      </button>
+      {open && (
+        <div className="member-bio">
+          {hasBio ? (
+            <div dangerouslySetInnerHTML={{ __html: bio }} />
+          ) : (
+            <p className="member-bio-empty">{t('members.noBiography')}</p>
+          )}
+        </div>
       )}
     </article>
   );
 }
 
 export default function Members({ go }) {
+  const { t } = useI18n();
   const [members, setMembers] = useState([]);
+  const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -45,11 +72,11 @@ export default function Members({ go }) {
     (async () => {
       if (!isSupabaseConfigured) {
         setLoading(false);
-        setError('Member list will appear once Supabase keys are configured.');
+        setError('config');
         return;
       }
       try {
-        // Executive only — live members are admin-only and never listed here.
+        // Executive only — life members are admin-only and never listed here.
         const data = await fetchPublicMembers();
         if (alive) setMembers(data);
       } catch (err) {
@@ -63,7 +90,7 @@ export default function Members({ go }) {
     };
   }, []);
 
-  // Defence-in-depth: never render a live member even if a stale row slips through.
+  // Defence-in-depth: never render a life member even if a stale row slips through.
   const executive = members.filter((m) => m.member_type === 'executive');
   const withRole = executive.filter((m) => m.designation);
   const others = executive.filter((m) => !m.designation);
@@ -72,32 +99,31 @@ export default function Members({ go }) {
     <main>
       <section className="page-hero">
         <div className="container">
-          <h1>Our Members</h1>
-          <div className="np-sub">हाम्रा सदस्यहरू</div>
-          <p>
-            Executive members and office-bearers bound together by the memory of Late Tulasiman
-            Shrestha and a shared commitment to education and folk heritage.
-          </p>
+          <h1>{t('members.title')}</h1>
+          <NpLine k="members.np" />
+          <p>{t('members.lead')}</p>
         </div>
         <Mountains />
       </section>
 
       {loading && (
         <section className="section">
-          <div className="container dash-empty">Loading members…</div>
+          <div className="container dash-empty">{t('members.loading')}</div>
         </section>
       )}
 
       {!loading && error && (
         <section className="section">
-          <div className="container dash-alert">{error}</div>
+          <div className="container dash-alert">
+            {error === 'config' ? t('members.unconfigured') : error}
+          </div>
         </section>
       )}
 
       {!loading && !error && executive.length === 0 && (
         <section className="section">
           <div className="container dash-empty">
-            Members will be listed here once added from the admin dashboard.
+            {t('members.empty')}
           </div>
         </section>
       )}
@@ -106,13 +132,18 @@ export default function Members({ go }) {
         <section className="section">
           <div className="container">
             <div className="section-head">
-              <span className="kicker">कार्यसमिति</span>
-              <h2>Committee &amp; designated roles</h2>
+              <span className="kicker">{t('members.committeeKicker')}</span>
+              <h2>{t('members.committeeTitle')}</h2>
               <Divider />
             </div>
             <div className="member-grid">
               {withRole.map((m) => (
-                <MemberCard member={m} key={m.id} />
+                <MemberCard
+                  member={m}
+                  key={m.id}
+                  open={openId === m.id}
+                  onToggle={() => setOpenId((current) => (current === m.id ? null : m.id))}
+                />
               ))}
             </div>
           </div>
@@ -123,13 +154,18 @@ export default function Members({ go }) {
         <section className={`section ${withRole.length ? 'tinted' : ''}`}>
           <div className="container">
             <div className="section-head">
-              <span className="kicker">कार्यसमिति सदस्यहरू</span>
-              <h2>Executive members</h2>
+              <span className="kicker">{t('members.executiveKicker')}</span>
+              <h2>{t('members.executiveTitle')}</h2>
               <Divider />
             </div>
             <div className="member-grid">
               {others.map((m) => (
-                <MemberCard member={m} key={m.id} />
+                <MemberCard
+                  member={m}
+                  key={m.id}
+                  open={openId === m.id}
+                  onToggle={() => setOpenId((current) => (current === m.id ? null : m.id))}
+                />
               ))}
             </div>
           </div>
@@ -138,13 +174,10 @@ export default function Members({ go }) {
 
       <section className="section crimson-band cta-band">
         <div className="container">
-          <h2>Become part of the family</h2>
-          <p>
-            Lifetime membership is open to anyone who shares our cause. Join more than 80 members
-            across Nepal and abroad, and help keep his lamp burning.
-          </p>
+          <h2>{t('members.ctaTitle')}</h2>
+          <p>{t('members.ctaText')}</p>
           <button className="btn btn-gold" onClick={() => go('contact')}>
-            Join the Society
+            {t('members.ctaButton')}
           </button>
         </div>
       </section>
