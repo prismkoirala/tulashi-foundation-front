@@ -76,7 +76,6 @@ export default function Members({ go }) {
         return;
       }
       try {
-        // Executive only — life members are admin-only and never listed here.
         const data = await fetchPublicMembers();
         if (alive) setMembers(data);
       } catch (err) {
@@ -90,10 +89,11 @@ export default function Members({ go }) {
     };
   }, []);
 
-  // Defence-in-depth: never render a life member even if a stale row slips through.
   const executive = members.filter((m) => m.member_type === 'executive');
   const withRole = executive.filter((m) => m.designation);
   const others = executive.filter((m) => !m.designation);
+  const life = members.filter((m) => m.member_type === 'life');
+  const lifeTinted = (withRole.length > 0 || others.length > 0) && !(withRole.length > 0 && others.length > 0);
 
   return (
     <main>
@@ -120,7 +120,7 @@ export default function Members({ go }) {
         </section>
       )}
 
-      {!loading && !error && executive.length === 0 && (
+      {!loading && !error && executive.length === 0 && life.length === 0 && (
         <section className="section">
           <div className="container dash-empty">
             {t('members.empty')}
@@ -167,6 +167,28 @@ export default function Members({ go }) {
                   onToggle={() => setOpenId((current) => (current === m.id ? null : m.id))}
                 />
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!loading && life.length > 0 && (
+        <section className={`section ${lifeTinted ? 'tinted' : ''}`}>
+          <div className="container">
+            <div className="section-head">
+              <span className="kicker">{t('members.lifeKicker')}</span>
+              <h2>{t('members.lifeTitle')}</h2>
+              <Divider />
+            </div>
+            <div className="life-bulletin">
+              <ol className="life-bulletin-list">
+                {life.map((member, index) => (
+                  <li key={member.id}>
+                    <span className="life-bulletin-index">{String(index + 1).padStart(2, '0')}</span>
+                    <span className="life-bulletin-name">{member.name}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </section>

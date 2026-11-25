@@ -183,9 +183,17 @@ export async function fetchMembers({ memberType } = {}) {
   return (data || []).map(mapMember);
 }
 
-/** Public /members page — executive members only, never life members. */
+/** Public /members page — executive cards plus the life-member roll. */
 export async function fetchPublicMembers() {
-  return fetchMembers({ memberType: 'executive' });
+  const { data, error } = await ensure()
+    .from('members')
+    .select('id, name, designation, address, permanent_address, image_url, bio, member_type, sort_order')
+    .order('sort_order', { ascending: true })
+    .order('name', { ascending: true });
+  if (error) throw error;
+  return (data || [])
+    .map(mapMember)
+    .filter((member) => member.member_type === 'executive' || member.member_type === 'life');
 }
 
 export async function fetchMember(id) {
@@ -310,4 +318,126 @@ export async function deleteTestimonialImage(imageId) {
 export async function deleteTestimonial(id) {
   const { error } = await ensure().from('testimonials').delete().eq('id', id);
   if (error) throw error;
+}
+
+const GALLERY_BUCKET = 'gallery-images';
+const GALLERY_SETUP =
+  '. Run supabase/07_gallery.sql in the Supabase SQL editor to create the gallery table and storage bucket.';
+
+const withGalleryError = (error) => {
+  const message = error?.message || '';
+  if (
+    /gallery_images|gallery-images|schema cache|Bucket not found/i.test(message) &&
+    !message.includes('07_gallery.sql')
+  ) {
+    error.message += GALLERY_SETUP;
+  }
+  return error;
+};
+
+const uploadGalleryFile = async (file) => {
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await ensure().storage.from(GALLERY_BUCKET).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+  if (error) throw withGalleryError(error);
+  return { image_url: publicUrl(GALLERY_BUCKET, path), storage_path: path };
+};
+
+const removeGalleryFiles = async (paths) => {
+  const clean = paths.filter(Boolean);
+  if (!clean.length) return;
+  const { error } = await ensure().storage.from(GALLERY_BUCKET).remove(clean);
+  if (error) throw withGalleryError(error);
+};
+
+/** Public gallery and the admin grid share one ordered list. */
+export async function fetchGallery() {
+  const { data, error } = await ensure()
+    .from('gallery_images')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: false });
+  if (error) throw withGalleryError(error);
+  return data || [];
+}
+
+/**
+ * Upload many photographs, then insert one row each.
+ * New batches are placed in front of existing photos (lower sort_order).
+ * `onProgress(done, total)` fires after each file lands in storage.
+ */
+export async function createGalleryImages(items, onProgress) {
+  const client = ensure();
+  if (!items.length) return [];
+
+  const { data: existing, error: orderError } = await client
+    .from('gallery_images')
+    .select('sort_order')
+    .order('sort_order', { ascending: true })
+    .limit(1);
+  if (orderError) throw withGalleryError(orderError);
+
+  const start = (existing?.[0]?.sort_order ?? 1) - items.length;
+  const uploaded = new Array(items.length);
+  let done = 0;
+  let cursor = 0;
+
+  const worker = async () => {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      uploaded[index] = await uploadGalleryFile(items[index].file);
+      done += 1;
+      onProgress?.(done, items.length);
+    }
+  };
+
+  try {
+    await Promise.all(Array.from({ length: Math.min(3, items.length) }, () => worker()));
+  } catch (error) {
+    await removeGalleryFiles(uploaded.filter(Boolean).map((file) => file.storage_path)).catch(() => {});
+    throw error;
+  }
+
+  const rows = uploaded.map((file, index) => ({
+    image_url: file.image_url,
+    storage_path: file.storage_path,
+    caption: items[index].caption?.trim() || null,
+    sort_order: start + index,
+  }));
+
+  const { data, error } = await client.from('gallery_images').insert(rows).select();
+  if (error) {
+    await removeGalleryFiles(rows.map((row) => row.storage_path)).catch(() => {});
+    throw withGalleryError(error);
+  }
+  return data || [];
+}
+
+export async function updateGalleryImage(id, { caption, sort_order }) {
+  const { data, error } = await ensure()
+    .from('gallery_images')
+    .update({
+      caption: caption?.trim() || null,
+      sort_order: Number(sort_order) || 0,
+    })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw withGalleryError(error);
+  return data;
+}
+
+/** Delete gallery rows and their storage objects. `items` are `{ id, storage_path }`. */
+export async function deleteGalleryImages(items) {
+  const client = ensure();
+  const ids = items.map((item) => item.id).filter(Boolean);
+  if (!ids.length) return;
+  const { error } = await client.from('gallery_images').delete().in('id', ids);
+  if (error) throw withGalleryError(error);
+  await removeGalleryFiles(items.map((item) => item.storage_path));
 }

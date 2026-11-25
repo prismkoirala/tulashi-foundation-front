@@ -1,4 +1,4 @@
-import { LOGO_URL, PROGRAMS, GALLERY } from '../data.js';
+import { LOGO_URL, PORTRAIT_URL, PROGRAMS, GALLERY } from '../data.js';
 import { Mountains, Divider, Icon } from '../components/Decor.jsx';
 import { NpLine, useI18n } from '../i18n/I18nContext.jsx';
 
@@ -27,8 +27,11 @@ export default function Home({ go }) {
               </button>
             </div>
           </div>
-          <div className="hero-seal">
-            <img src={LOGO_URL} alt={t('brand.seal')} />
+          <div className="hero-visual">
+            <img className="hero-portrait" src={PORTRAIT_URL} alt={t('home.portraitAlt')} />
+            <div className="hero-seal">
+              <img src={LOGO_URL} alt={t('brand.seal')} />
+            </div>
           </div>
         </div>
         <Mountains />

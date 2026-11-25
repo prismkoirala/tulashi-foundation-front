@@ -1,11 +1,13 @@
 const BASE = import.meta.env.BASE_URL;
 
 export const LOGO_URL = BASE + 'logo/' + encodeURIComponent('Screenshot 2026-08-06 at 16.58.53.png');
+export const PORTRAIT_URL = BASE + 'hero/portrait.png';
 
 export const PAGES = [
   { id: 'home', label: 'Home' },
   { id: 'members', label: 'Members' },
   { id: 'testimonials', label: 'Events' },
+  { id: 'gallery', label: 'Gallery' },
   { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ];

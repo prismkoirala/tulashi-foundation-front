@@ -3,6 +3,7 @@ import { LOGO_URL } from '../data.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import MembersAdmin from './MembersAdmin.jsx';
 import TestimonialsAdmin from './TestimonialsAdmin.jsx';
+import GalleryAdmin from './GalleryAdmin.jsx';
 
 const MemberEditor = lazy(() => import('./MemberEditor.jsx'));
 
@@ -51,6 +52,13 @@ export default function Dashboard({ tab = 'members', memberEditor = null, go }) 
           >
             Events &amp; Memories
           </button>
+          <button
+            type="button"
+            className={tab === 'gallery' ? 'active' : ''}
+            onClick={() => go('dashboard/gallery')}
+          >
+            Gallery
+          </button>
         </nav>
         <div className="dash-side-foot">
           <div className="dash-user">{user.email}</div>
@@ -65,6 +73,8 @@ export default function Dashboard({ tab = 'members', memberEditor = null, go }) 
       <section className="dash-main">
         {tab === 'testimonials' ? (
           <TestimonialsAdmin />
+        ) : tab === 'gallery' ? (
+          <GalleryAdmin />
         ) : memberEditor ? (
           <Suspense fallback={<div className="dash-empty">Loading editor…</div>}>
             <MemberEditor memberId={memberEditor} go={go} />
