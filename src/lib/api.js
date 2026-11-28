@@ -25,15 +25,19 @@ const uploadFile = async (bucket, file) => {
 
 export const MEMBER_TYPES = [
   { value: 'executive', label: 'Executive' },
+  { value: 'advisory_board', label: 'Advisory board' },
+  { value: 'international_candidate', label: 'International candidate' },
   { value: 'life', label: 'Life' },
 ];
 
 export const DEFAULT_MEMBER_TYPE = 'life';
 
+const MEMBER_TYPE_VALUES = new Set(MEMBER_TYPES.map((type) => type.value));
+
 /** 'live' is the old value; treat it as life until the SQL rename is applied. */
 export const normalizeMemberType = (value) => {
-  if (value === 'executive') return 'executive';
-  if (value === 'life' || value === 'live') return 'life';
+  if (value === 'live') return 'life';
+  if (MEMBER_TYPE_VALUES.has(value)) return value;
   return DEFAULT_MEMBER_TYPE;
 };
 
@@ -42,7 +46,7 @@ const mapMember = (row) => ({ ...row, member_type: normalizeMemberType(row.membe
 const withMemberTypeError = (error) => {
   if (error?.message?.includes('members_member_type_check')) {
     error.message +=
-      ' Run supabase/05_member_type_life.sql in the Supabase SQL editor so member_type allows executive and life.';
+      ' Run supabase/09_member_types_advisory_international.sql in the Supabase SQL editor so member_type allows executive, advisory board, international candidate, and life.';
   }
   if (error?.message?.includes("'bio'") || error?.message?.includes('column "bio"') || error?.message?.includes('members.bio')) {
     error.message += ' Run supabase/06_member_bio.sql in the Supabase SQL editor to add the biography column.';
@@ -52,8 +56,8 @@ const withMemberTypeError = (error) => {
 
 const applyMemberTypeFilter = (query, memberType) => {
   if (!memberType || memberType === 'all') return query;
-  if (memberType === 'executive') return query.eq('member_type', 'executive');
   if (memberType === 'life' || memberType === 'live') return query.in('member_type', ['life', 'live']);
+  if (MEMBER_TYPE_VALUES.has(memberType)) return query.eq('member_type', memberType);
   return query;
 };
 
@@ -183,7 +187,7 @@ export async function fetchMembers({ memberType } = {}) {
   return (data || []).map(mapMember);
 }
 
-/** Public /members page — executive cards plus the life-member roll. */
+/** Public /members page — executives, advisory board, and the life-member roll. */
 export async function fetchPublicMembers() {
   const { data, error } = await ensure()
     .from('members')
@@ -193,7 +197,11 @@ export async function fetchPublicMembers() {
   if (error) throw error;
   return (data || [])
     .map(mapMember)
-    .filter((member) => member.member_type === 'executive' || member.member_type === 'life');
+    .filter((member) =>
+      member.member_type === 'executive' ||
+      member.member_type === 'advisory_board' ||
+      member.member_type === 'life',
+    );
 }
 
 export async function fetchMember(id) {

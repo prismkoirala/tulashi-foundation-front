@@ -362,11 +362,12 @@ button { font-family: var(--sans); }
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 72px;
 }
 .hero-portrait {
   height: clamp(300px, 36vw, 430px);
   width: auto;
-  margin-right: -150px;
+  margin-right: 0;
   position: relative;
   z-index: 1;
   object-fit: contain;
@@ -907,6 +908,7 @@ button { font-family: var(--sans); }
   position: relative;
 }
 .member-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.member-card.is-static .member-card-toggle { cursor: default; }
 .member-card.is-open,
 .member-card.is-open:hover {
   grid-column: 1 / -1;
@@ -1412,6 +1414,8 @@ button { font-family: var(--sans); }
   white-space: nowrap;
 }
 .dash-badge-executive { background: var(--gold-soft); color: #8a5d10; border: 1px solid var(--gold); }
+.dash-badge-advisory_board { background: #eef3fb; color: var(--himalaya); border: 1px solid #c5d4ee; }
+.dash-badge-international_candidate { background: #f3eef8; color: #5c3d78; border: 1px solid #ddcfea; }
 .dash-badge-life { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
 .dash-filter-toggle { cursor: pointer; font-weight: 600; color: var(--ink); }
 .dash-filter-toggle.active {
@@ -1947,8 +1951,8 @@ button { font-family: var(--sans); }
   .hero-eyebrow { justify-content: center; }
   .hero p.lead { margin-inline: auto; }
   .hero-actions { justify-content: center; }
-  .hero-visual { order: -1; justify-content: center; }
-  .hero-portrait { height: 250px; margin-right: -80px; }
+  .hero-visual { order: -1; justify-content: center; gap: 20px; }
+  .hero-portrait { height: 250px; margin-right: 0; }
   .hero-seal img { width: 168px; }
   .about-grid, .contact-grid { grid-template-columns: 1fr; }
   .program-grid, .voice-grid { grid-template-columns: 1fr 1fr; }
@@ -1993,6 +1997,9 @@ button { font-family: var(--sans); }
 }
 
 @media (max-width: 600px) {
+  .hero-visual { gap: 32px; }
+  .hero-portrait { height: 170px; }
+  .hero-seal img { width: 108px; padding: 8px; border-width: 4px; }
   .section { padding: 60px 0; }
   .program-grid, .voice-grid { grid-template-columns: 1fr; }
   .member-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }

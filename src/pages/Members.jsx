@@ -16,18 +16,19 @@ const initials = (name = '') =>
     .join('')
     .toUpperCase() || '?';
 
-function MemberCard({ member, open, onToggle }) {
+function MemberCard({ member, open, onToggle, expandable = true }) {
   const { t } = useI18n();
   const bio = sanitizeBio(member.bio);
   const hasBio = !bioIsEmpty(bio);
+  const Tag = expandable ? 'button' : 'div';
 
   return (
-    <article className={`member-card${open ? ' is-open' : ''}`}>
-      <button
-        type="button"
+    <article className={`member-card${open ? ' is-open' : ''}${expandable ? '' : ' is-static'}`}>
+      <Tag
+        {...(expandable
+          ? { type: 'button', 'aria-expanded': open, onClick: onToggle }
+          : {})}
         className="member-card-toggle"
-        aria-expanded={open}
-        onClick={onToggle}
       >
         <div className="member-photo" aria-hidden="true">
           {member.image_url ? (
@@ -44,10 +45,12 @@ function MemberCard({ member, open, onToggle }) {
               {member.address || member.permanent_address}
             </span>
           )}
-          <span className="member-expand">{open ? t('members.hideBiography') : t('members.biography')}</span>
+          {expandable && (
+            <span className="member-expand">{open ? t('members.hideBiography') : t('members.biography')}</span>
+          )}
         </div>
-      </button>
-      {open && (
+      </Tag>
+      {expandable && open && (
         <div className="member-bio">
           {hasBio ? (
             <div dangerouslySetInnerHTML={{ __html: bio }} />
@@ -92,8 +95,14 @@ export default function Members({ go }) {
   const executive = members.filter((m) => m.member_type === 'executive');
   const withRole = executive.filter((m) => m.designation);
   const others = executive.filter((m) => !m.designation);
+  const advisory = members.filter((m) => m.member_type === 'advisory_board');
   const life = members.filter((m) => m.member_type === 'life');
-  const lifeTinted = (withRole.length > 0 || others.length > 0) && !(withRole.length > 0 && others.length > 0);
+  const hasExecutiveSection = withRole.length > 0 || others.length > 0;
+  const lastExecutiveTinted = withRole.length > 0 && others.length > 0;
+  const advisoryTinted = hasExecutiveSection && !lastExecutiveTinted;
+  const sectionBeforeLifeTinted = advisory.length > 0 ? advisoryTinted : lastExecutiveTinted;
+  const hasSectionBeforeLife = advisory.length > 0 || hasExecutiveSection;
+  const lifeTinted = hasSectionBeforeLife && !sectionBeforeLifeTinted;
 
   return (
     <main>
@@ -120,7 +129,7 @@ export default function Members({ go }) {
         </section>
       )}
 
-      {!loading && !error && executive.length === 0 && life.length === 0 && (
+      {!loading && !error && executive.length === 0 && advisory.length === 0 && life.length === 0 && (
         <section className="section">
           <div className="container dash-empty">
             {t('members.empty')}
@@ -166,6 +175,23 @@ export default function Members({ go }) {
                   open={openId === m.id}
                   onToggle={() => setOpenId((current) => (current === m.id ? null : m.id))}
                 />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {!loading && advisory.length > 0 && (
+        <section className={`section ${advisoryTinted ? 'tinted' : ''}`}>
+          <div className="container">
+            <div className="section-head">
+              <span className="kicker">{t('members.advisoryKicker')}</span>
+              <h2>{t('members.advisoryTitle')}</h2>
+              <Divider />
+            </div>
+            <div className="member-grid">
+              {advisory.map((m) => (
+                <MemberCard member={m} key={m.id} expandable={false} />
               ))}
             </div>
           </div>

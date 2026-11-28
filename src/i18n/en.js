@@ -115,7 +115,7 @@ const en = {
     title: 'Our Members',
     np: 'हाम्रा सदस्यहरू',
     lead:
-      'Executive members, office-bearers, and life members bound together by the memory of Late Tulasiman Shrestha and a shared commitment to education and folk heritage.',
+      'Executive members, the advisory board, and life members bound together by the memory of Late Tulasiman Shrestha and a shared commitment to education and folk heritage.',
     loading: 'Loading members…',
     unconfigured: 'Member list will appear once Supabase keys are configured.',
     empty: 'Members will be listed here once added from the admin dashboard.',
@@ -123,6 +123,8 @@ const en = {
     committeeTitle: 'Committee & designated roles',
     executiveKicker: 'कार्यसमिति सदस्यहरू',
     executiveTitle: 'Executive members',
+    advisoryKicker: 'सल्लाहकार समिति',
+    advisoryTitle: 'Advisory board',
     lifeKicker: 'आजीवन सदस्य',
     lifeTitle: 'Life members',
     biography: 'Biography',

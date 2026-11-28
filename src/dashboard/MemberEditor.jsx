@@ -158,7 +158,7 @@ export default function MemberEditor({ memberId, go }) {
                 ))}
               </select>
               <span className="dash-tiny">
-                Executive = shown on public Members page · Life = admin-only
+                Executive and advisory board appear on the public Members page. Life members are listed by name. International candidates stay in the dashboard.
               </span>
             </label>
             <label>
